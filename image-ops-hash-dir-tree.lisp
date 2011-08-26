@@ -1,11 +1,11 @@
-;;; :FILE-CREATED <Timestamp: #{2011-08-26T11:51:33-04:00Z}#{11345} - by MON>
-;;; :FILE mon-image-ops/image-hash-directory-tree.lisp
+;;; :FILE-CREATED <Timestamp: #{2011-08-26T16:44:51-04:00Z}#{11345} - by MON>
+;;; :FILE image-ops/image-ops-hash-dir-tree.lisp
 ;;; ==============================
 
+;; :NOTE Our main function here is `walk-directory-images-to-hash' at BOF
 
-;; (in-package :image-ops)
-
-;; :NOTE Our main function here is `walk-directory-images-to-hash'
+(in-package #:image-ops)
+;; *package*
 
 (declaim (inline %ensure-simple-string
                  %walk-directory-filter-ignorables

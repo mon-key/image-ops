@@ -1,5 +1,5 @@
 ;;; -*- mode: lisp -*-
-;;; :FILE mon-systems/mon.asd
+;;; :FILE image-ops/image-ops.asd
 ;;; ==============================
 
 ;; ,----
@@ -21,9 +21,9 @@
   :author  "MON KEY"
   :maintainer "MON KEY"
   :license "MIT" 
-  :description "MON agglomerated"
+  :description "image operations agglomerated"
   :version "1.0.0"
-  :depends-on (:mon)
+  :depends-on (:mon) ;; :image-ops-jpeg
   :serial t    
   :components
   ((:file "package") 

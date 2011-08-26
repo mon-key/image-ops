@@ -1,21 +1,21 @@
 ;;; :FILE-CREATED <Timestamp: #{2011-08-02T19:25:49-04:00Z}#{11312} - by MON>
-;;; :FILE mon-image-ops/image-ops-rotate.lisp
+;;; :FILE image-ops/image-ops-rotate.lisp
 ;;; ==============================
 
 ;; :TODO incorporate the metafs/MeDaMA abstractions for image files.
 
-;; (in-package :image-ops)
+(in-package #:image-ops)
 ;; *package*
 
 
 
 (defun verify-image-magic-convert-path ()
   ;; 
-  (declare (inline string-not-empty-p)
+  (declare (inline mon:string-not-empty-p)
            (optimize (speed 3)))
   (unless (and (boundp '*image-magick-convert-path*) 
                *image-magick-convert-path* 
-               (string-not-empty-p *image-magick-convert-path*))
+               (mon:string-not-empty-p *image-magick-convert-path*))
     (error "Variable `mon:*image-magick-convert-path*' not bound.~%~
             A path to ImageMagick's `convert` command must be provided.~%~
             If this is a Windows machine it must be done so explicitly.~%~
@@ -25,11 +25,11 @@
 
 (defun verify-image-file-output-type (maybe-valid-output-extension)
   (declare (string maybe-valid-output-extension))
-  (unless (member maybe-valid-output-extension mon::*valid-image-types* :test #'string-equal)
+  (unless (member maybe-valid-output-extension image-ops::*valid-image-types* :test #'string-equal)
     (mon:simple-error-mon  :w-sym "verify-image-file-output-type"
                            :w-type 'function
                            :w-spec "arg MAYBE-VALID-OUTPUT-EXTENSION not string-equal any of:~% ~S"
-                           :w-args  (list mon::*valid-image-types*)
+                           :w-args  (list image-ops::*valid-image-types*)
                            :w-got   maybe-valid-output-extension
                            :w-type-of t
                            :signal-or-only nil))
@@ -79,7 +79,7 @@
            (special special-param))
   (unset-special-param-read-image-file-list special-param)
   (set special-param
-       (read-file-list-from-fprint0-file pathname-or-namestring :external-format external-format)))
+       (mon:read-file-list-from-fprint0-file pathname-or-namestring :external-format external-format)))
 
 (defun make-target-pathname-for-image-resize (source-pathname &key target-directory target-type
                                                                (prefix-name-with "") 
@@ -115,8 +115,8 @@
 (defun write-fprint0-file-for-image-files-in-pathname (&key search-directory search-type append-suffix dest-pathname) 
   (declare (mon:filename-designator search-directory)
            (string search-type)
-           (string-or-null append-suffix)
-           ((or null filename-designator) dest-pathname))
+           (mon:string-or-null append-suffix)
+           ((or null mon:filename-designator) dest-pathname))
   (let* ((directory
           (multiple-value-bind (type maybe-dir) (mon:pathname-native-file-kind search-directory)
             (if (eql type :directory)
@@ -131,7 +131,7 @@
           (cons (make-pathname :directory `(,@(pathname-directory directory))
                                :name :wild :type (verify-image-file-output-type search-type))
                 directory))
-         (suffix (or (and (string-empty-p append-suffix) "")
+         (suffix (or (and (mon:string-empty-p append-suffix) "")
                      (and append-suffix 
                           (let ((chk-empty (string-left-trim (list #\- #\.) append-suffix)))
                             (and (mon:string-not-empty-or-all-whitespace-p chk-empty) chk-empty)))

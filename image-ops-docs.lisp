@@ -1,10 +1,9 @@
 ;;; :FILE-CREATED <Timestamp: #{2011-08-26T11:55:57-04:00Z}#{11345} - by MON>
-;;; :FILE mon-image-ops/image-ops-docs.lisp
+;;; :FILE image-ops/image-ops-docs.lisp
 ;;; ==============================
 
-;; (in-package :image-ops)
+(in-package #:image-ops)
 ;; *package*
-
 
 
 
@@ -13,7 +12,7 @@
 ;;; ==============================
 ;;
 
-(vardoc '*read-image-file-list*
+(mon:vardoc '*read-image-file-list*
         "Variable holding a list of pathnames.
 Variable is set by `read-image-file-list-from-file'.
 It is unset with `unset-special-param-read-image-file-list'.
@@ -21,24 +20,24 @@ It is unset with `unset-special-param-read-image-file-list'.
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(vardoc '*valid-image-types*
+(mon:vardoc '*valid-image-types*
 "List of strings designating valid pathname-types.~%~@
 :EXAMPLE~%~@
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(vardoc '*image-output-default-thumb-type*
+(mon:vardoc '*image-output-default-thumb-type*
 "String designating a defualt `cl:pathname-type' to use when outputing an image type.~%~@
 :EXAMPLE~%~@
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(vardoc '*image-magick-convert-path*
+(mon:vardoc '*image-magick-convert-path*
 "Path to an ImageMagick exectuable.~%~@
 Its value is used by procedures which exectue `sb-ext:run-program'.~%~@
 :SEE-ALSO `mon::verify-image-magic-convert-path'.~%▶▶▶")
 
-(vardoc '*psd-hash*
+(mon:vardoc '*psd-hash*
 "A hash-table storing pathname information of located files with a `cl:pathname-type' `cl:string-equal' to \"psd\".~%~@
 Its `cl:hash-table-test' is `cl:equal'.~%~@
  It should satisfy `sb-ext:hash-table-synchronized-p'.~%~@
@@ -47,7 +46,7 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 :SEE-ALSO `*jpg-gz-hash*', `*jpg-hash*', `*bmp-hash*', `*bmp-gz-hash*', `*nef-hash*',
 `*tiff-hash*', `*psd-hash*', `*other-hash*'.~%▶▶▶")
 
-(vardoc '*jpg-gz-hash*
+(mon:vardoc '*jpg-gz-hash*
         "A hash-table storing pathname information of located JPEG files with `cl:pathname-type' \".gz\".~%~@
 Its `cl:hash-table-test' is `cl:equal'.~%~@
  It should satisfy `sb-ext:hash-table-synchronized-p'.~%~@
@@ -56,7 +55,7 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 :SEE-ALSO `*jpg-gz-hash*', `*jpg-hash*', `*bmp-hash*', `*bmp-gz-hash*', `*nef-hash*',
 `*tiff-hash*', `*psd-hash*', `*other-hash*'.~%▶▶▶")
 
-(vardoc '*jpg-hash*
+(mon:vardoc '*jpg-hash*
 "A hash-table storing pathname information located JPEG files with
 `cl:pathname-type' which is `cl:string-equal' to either\"jpg\" or \"jpeg\".~%~@
 Its `cl:hash-table-test' is `cl:equal'.~%~@
@@ -66,7 +65,7 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 :SEE-ALSO `*jpg-gz-hash*', `*jpg-hash*', `*bmp-hash*', `*bmp-gz-hash*', `*nef-hash*',
 `*tiff-hash*', `*psd-hash*', `*other-hash*'.~%▶▶▶")
 
-(vardoc '*bmp-hash*
+(mon:vardoc '*bmp-hash*
 "A hash-table storing pathname information of located files with a `cl:pathname-type' which is `cl:string-equal' to .~%~@
 Its `cl:hash-table-test' is `cl:equal'.~%~@
  It should satisfy `sb-ext:hash-table-synchronized-p'.~%~@
@@ -75,7 +74,7 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 :SEE-ALSO `*jpg-gz-hash*', `*jpg-hash*', `*bmp-hash*', `*bmp-gz-hash*', `*nef-hash*',
 `*tiff-hash*', `*psd-hash*', `*other-hash*'.~%▶▶▶")
 
-(vardoc '*bmp-gz-hash*
+(mon:vardoc '*bmp-gz-hash*
 "A hash-table storing pathname information of located bitmap files with a
 `cl:pathname-type' which is `cl:string-equal' to \"gz\".~%~@
 Its `cl:hash-table-test' is `cl:equal'.~%~@
@@ -85,7 +84,7 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 :SEE-ALSO `*jpg-gz-hash*', `*jpg-hash*', `*bmp-hash*', `*bmp-gz-hash*', `*nef-hash*',
 `*tiff-hash*', `*psd-hash*', `*other-hash*'.~%▶▶▶")
 
-(vardoc '*nef-hash*
+(mon:vardoc '*nef-hash*
         "A hash-table storing pathname information of located NEF files with a `cl:pathname-type' which is `cl:string-equal' to \"nef\".~%~@
 Its `cl:hash-table-test' is `cl:equal'.~%~@
  It should satisfy `sb-ext:hash-table-synchronized-p'.~%~@
@@ -94,7 +93,7 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 :SEE-ALSO `*jpg-gz-hash*', `*jpg-hash*', `*bmp-hash*', `*bmp-gz-hash*', `*nef-hash*',
 `*tiff-hash*', `*psd-hash*', `*other-hash*'.~%▶▶▶")
 
-(vardoc '*tiff-hash*
+(mon:vardoc '*tiff-hash*
 "A hash-table storing pathname information of located TIFF files with a
 `cl:pathname-type' which is `cl:string-equal' to either \"tif\" or \"tiff\".~%~@
 Its `cl:hash-table-test' is `cl:equal'.~%~@
@@ -104,7 +103,7 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 :SEE-ALSO `*jpg-gz-hash*', `*jpg-hash*', `*bmp-hash*', `*bmp-gz-hash*', `*nef-hash*',
 `*tiff-hash*', `*psd-hash*', `*other-hash*'.~%▶▶▶")
 
-(vardoc '*other-hash*
+(mon:vardoc '*other-hash*
         "A hash-table storing pathname information of located files whch does not match any of the existing image regexps:
  `*jpg-scanner*'`*jpg-gz-scanner*'
  `*bmp-scanner*' `*bmp-gz-scanner*'
@@ -117,20 +116,20 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 :SEE-ALSO `*jpg-gz-hash*', `*jpg-hash*', `*bmp-hash*', `*bmp-gz-hash*', `*nef-hash*',
 `*tiff-hash*', `*psd-hash*', `*other-hash*'.~%▶▶▶")
 
-;; (vardoc '*psd-scanner*
-;; (vardoc '*jpg-gz-scanner*
-;; (vardoc '*jpg-scanner*
-;; (vardoc '*bmp-scanner*
-;; (vardoc '*bmp-gz-scanner*
-;; (vardoc '*nef-scanner*
-;; (vardoc '*tiff-scanner*
+;; (mon:vardoc '*psd-scanner*
+;; (mon:vardoc '*jpg-gz-scanner*
+;; (mon:vardoc '*jpg-scanner*
+;; (mon:vardoc '*bmp-scanner*
+;; (mon:vardoc '*bmp-gz-scanner*
+;; (mon:vardoc '*nef-scanner*
+;; (mon:vardoc '*tiff-scanner*
 
 
 ;;; ==============================
 ;;; :FUNCTIONS-DOCUMENTATION
 ;;; ==============================
 
-(fundoc 'verify-image-magic-convert-path
+(mon:fundoc 'verify-image-magic-convert-path
 "Return T if variable `*image-magick-convert-path*' is `boundp' and its value is `string-not-empty-p.~%~@
 An error is signaled if not.~%~@
 Procedures which execute `sb-ext:run-program' with *image-magick-convert-path*
@@ -139,7 +138,7 @@ as the COMMAND arg should invoke this function first.~%~@
  \(verify-image-magic-convert-path\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'verify-image-file-file-kind
+(mon:fundoc 'verify-image-file-file-kind
 " Whether MAYBE-IMAGE-FILE-FILE satisfies `mon:pathname-or-namestring-not-empty-dotted-or-wild-p'.~%~@
 If so, return its `cl:pathname' representation.
 If not when ERROR-ON-WILD-EMPTY-DOTTED is null return nil, else signal an error.
@@ -147,16 +146,16 @@ If not when ERROR-ON-WILD-EMPTY-DOTTED is null return nil, else signal an error.
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'verify-image-file-output-type
-"Whether MAYBE-VALID-OUTPUT-EXTENSION is cl:string-equal an element in `mon:*valid-image-types*'.~%~@
+(mon:fundoc 'verify-image-file-output-type
+"Whether MAYBE-VALID-OUTPUT-EXTENSION is cl:string-equal an element in `*valid-image-types*'.~%~@
 If so, return its `cl:string-downcase'd representation else signal an error.~%~@
 :EXAMPLE~%
  \(mapcar #'verify-image-file-output-type 
-         \(mapcar #'string-upcase mon::*valid-image-types*\)\)~%
+         \(mapcar #'string-upcase *valid-image-types*\)\)~%
  \(verify-image-file-output-type \"bubba\"\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'unset-special-param-read-image-file-list
+(mon:fundoc 'unset-special-param-read-image-file-list
 "Unset the value of SPECIAL-PARAM.~%~@
 :EXAMPLE~%
  \(progn
@@ -164,7 +163,7 @@ If so, return its `cl:string-downcase'd representation else signal an error.~%~@
    \(unset-special-param-read-image-file-list '*read-image-file-list*\)\) 
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'read-image-file-list-from-file
+(mon:fundoc 'read-image-file-list-from-file
 "Read the list of pathnames stored in PATHNAME-OR-NAMESTRING set the list read
 as value of SPECIAL-PARAM.~%~@
 Keyword SPECIAL-PARAM is a special parameter to use when holding a list of
@@ -174,7 +173,7 @@ Keyword EXTERNAL-FORMAT is as if by `cl:open'. Default value is :default.~%~@
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'make-target-pathname-for-image-resize
+(mon:fundoc 'make-target-pathname-for-image-resize
         "Return a pathname for use in image resizing operations~%~@
 Return value is a cons of the form:~%
  \( <SOURCE-PATHAME> . <GENERATED-DESTINATION-PATHNAME>\)~%~@
@@ -196,7 +195,7 @@ Keyword SUFFIX-NAME-WITH is a string to append to SOURCE-PATHNAME's `cl:pathname
   :suffix-name-with \"-appended\"\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'make-pathname-source-destination-resize-pairs
+(mon:fundoc 'make-pathname-source-destination-resize-pairs
         "Return a list of consed source/target image pairs.~%~@
 READ-SOURCE-FILES-FROM is an object of type `mon:pathname-or-namestring' its
 contents are processed with `mon:read-image-file-list-from-fprint0-file'.
@@ -212,7 +211,7 @@ per `mon:make-target-pathname-for-image-resize'.~%~@
   :suffix-name-with \"-appended\"\)
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'write-fprint0-file-for-image-files-in-pathname
+(mon:fundoc 'write-fprint0-file-for-image-files-in-pathname
         "Write a #\Nul terminated list of files for files contained of SEARCH-DIRECTORY matching SEARCH-TYPE.~%~@
 Return the pathname of file so written.~%~@
 SEARCH-DIRECTORY names an existing directory containing image files of type SEARCH-TYPE
@@ -237,7 +236,7 @@ SEARCH-DIRECTORY its namestring has the following form:
   :dest-pathname \"/some/path/full/of/tif/files/dump-file\"\)~%
 :SEE-ALSO `read-image-file-list-from-fprint0-file', `resize-image-files-in-fprint0-file'.~%▶▶▶")
 
-(fundoc 'read-image-file-list-from-fprint0-file
+(mon:fundoc 'read-image-file-list-from-fprint0-file
         "Read the #\\Nul character terminated pathnames contained of PATHNAME-OR-NAMESTRING.~%~@
 Return a list of strings with each null terminated pathname split on the
 terminating #\\Nul character with #\\Nul char removed.~%~@
@@ -249,7 +248,7 @@ Keyword SPECIAL-PARAM is a special variable to bind results to. Default is `mon:
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `write-fprint0-file-for-image-files-in-pathname', `resize-image-files-in-fprint0-file'.~%▶▶▶")
 
-(fundoc 'resize-image-files-in-fprint0-file
+(mon:fundoc 'resize-image-files-in-fprint0-file
 "Resize each null-terminated pathname in FPRINT0-FILE.~%~@
 Keyword resize-x is an unsigned integer value.
 Keywords TARGET-DIRECTORY, TARGET-TYPE, PREFIX-NAME-WITH, and SUFFIX-NAME-WITH are as per 
@@ -277,7 +276,7 @@ appended to the resized imaged saved to TARGET-DIRECTORY.~%~@
  :resize-x 1000\)~%~@
 :SEE-ALSO `read-image-file-list-from-fprint0-file', `write-fprint0-file-for-image-files-in-pathname'.~%▶▶▶")
 
-(fundoc 'rotate-image-files-in-dir-list
+(mon:fundoc 'rotate-image-files-in-dir-list
 "Rotate each image found in the directories of DIR-LIST by DEGREES POSITIVE-OR-NEGATIVE.~%~@
 Rotation is performed with external command `convert` from the ImageMagick suite.~%~@
 DIR-LIST is a list of pathnames designating existing directories. No symlink detection is performed.
@@ -301,7 +300,7 @@ thread object this function exececutes in. Default is mon::*rotate-images-thread
  :image-type \"jpeg\" :degrees 90 :positive-or-negative :counter-clockwise\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'walk-directory-images-to-hash
+(mon:fundoc 'walk-directory-images-to-hash
         "Walk each directory in DIRECTORY-PATHNAME find all files which match a regexp
 closure and set the filename of each match as the key in an appropriate
 hash-table.~%~@
@@ -323,7 +322,7 @@ existing counts are cleared with `image-hash-reset-all'.~%~@
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
-(fundoc 'image-hash-reset-all
+(mon:fundoc 'image-hash-reset-all
 "Evaluate `cl:clrhash' for the following hash-tables:
  `*jpg-hash*'   `*jpg-gz-hash*'
  `*bmp-hash*'   `*bmp-gz-hash*'
@@ -333,7 +332,7 @@ existing counts are cleared with `image-hash-reset-all'.~%~@
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `image-hash-counts-report'.~%▶▶▶")
 
-(fundoc 'image-hash-counts-report
+(mon:fundoc 'image-hash-counts-report
 "Return a list of `cl:hash-table-count's for following hash-tables:~%
  `*jpg-hash*'   `*jpg-gz-hash*'
  `*bmp-hash*'   `*bmp-gz-hash*'

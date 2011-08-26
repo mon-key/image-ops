@@ -1,10 +1,9 @@
 ;;; :FILE-CREATED <Timestamp: #{2011-08-26T11:55:15-04:00Z}#{11345} - by MON>
-;;; :FILE mon-image-ops/image-ops-specials.lisp
+;;; :FILE image-ops/image-ops-specials.lisp
 ;;; ==============================
 
-;; (in-package :image-ops)
+(in-package #:image-ops)
 ;; *package*
-
 
 
 (defparameter *rotate-images-thread* '())
@@ -24,7 +23,7 @@
   ;; We assume that any of the following have convert in /user/bin/ if
   ;; `mon:executable-find' doesn't return T:
   ;; #+(or linux darwin netbsd openbsd freebsd)
-  #+sbcl (or (executable-find "convert") 
+  #+sbcl (or (mon:executable-find "convert") 
              (and (probe-file #P"/usr/bin/convert")
                   "/usr/bin/convert")))
 
