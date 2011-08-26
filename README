@@ -1,0 +1,44 @@
+The genesis of this system origninated from features previously provided by:
+ mon-systems/image-rotate.lisp
+ clime/clime-hash-directory-tree.lisp
+
+IMAGE-OPS is dependent on the system MON:
+
+ https://github.com/mon-key/mon-systems-cl
+ git://github.com/mon-key/mon-systems-cl.git
+
+Additional features from the system CL-BMP incorporated here as well as needed.
+
+:SEE https://github.com/mon-key/cl-bmp
+
+Likewise, we anticipate incorporating features form Walter Pelissero's systems
+:SEE http://wcp.sdf-eu.org/software/
+In particular we anticipate incorporating features of the following:
+
+ TIFF4CL -- http://wcp.sdf-eu.org/software/tiff4cl-20090828.src.tbz
+ metafs  -- http://wcp.sdf-eu.org/software/metafs-20110308.src.tbz
+ sclf    -- http://wcp.sdf-eu.org/software/sclf-20110816.src.tbz
+
+However, at present TIFF4CL is not yet distributed with Quicklisp and it is not
+clear whether we should use the metafs and sclf systems provided with Quicklisp
+or a locally maintained (and likely divergent) repo.
+
+Some features provided by the image-ops system are SBCL dependent. 
+
+While some initial attempts are made towards maintaining portability it is
+likely adjustments will be needed to get IMAGE-OPS runnind on other
+implementations.
+
+I've tried to use equivalent Osicat feature where there is an apparent 1:1
+compatibility with a feature provided from the SB-EXT and SB-POSIX packages.
+
+IMAGE-OPS relies on SB-EXT:RUN-PROGRAM likely ASDF:RUN-SHELL-COMMAND could be
+substituted.
+
+IMAGE-OPS relies on SB-THREAD:MAKE-THREAD likely a thread compatibility package
+could be substituted.
+
+IMAGE-OPS relies on SB-EXT:WITH-LOCKED-HASH-TABLE and binds some variables to
+hash-tables with (make-hash-table {...} :synchronized t) likely other
+implementations provide equivalent routines which might easily be substituted.
+
