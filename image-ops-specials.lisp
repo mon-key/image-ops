@@ -34,7 +34,10 @@
 (defparameter *walk-directory-ignorables* (list "lost+found/"
                                                 ".BridgeCache"
                                                 ".BridgeCacheT"
-                                                "Thumbs.db"))
+                                                "Thumbs.db"
+                                                ".git/" ".bzr/" ".hg/" ".svn/" "_darcs/" "RCS/" "CVS/" "rcs/" "cvs/"
+                                                ".gitignore" ".hgignore" ".bzrignore"
+                                                ))
 (defvar *psd-scanner* 
   (cl-ppcre:create-scanner "^/.*\\.(psd|PSD)$"))
 
