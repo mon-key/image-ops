@@ -205,6 +205,38 @@
        (%walk-directory-images-to-hash directory-pathname :clear-count clear-count))
    :name (format nil "WALK-DIRECTORY-IMAGES-TO-HASH-~D" (random most-positive-fixnum))))
 
+(defun image-hash-write-to-file (hash-table directory-pathname hash-table-name &key (external-format :default))
+  (declare (mon:pathname-or-namestring directory-pathname))
+  (let* ((dir-ensure     (ensure-directories-exist (pathname directory-pathname)))
+         (hash-file-name (and dir-ensure 
+                              (make-pathname :directory (pathname-directory dir-ensure)
+                                             :name (concatenate 'string hash-table-name '(#\-) (mon:time-string-yyyy-mm-dd)))))
+         (delim          (make-string 68 :initial-element #\;)))
+    (with-open-file (f hash-file-name
+                       :direction         :output
+                       :if-exists         :supersede
+                       :if-does-not-exist :create
+                       :element-type       'character
+                       :external-format   external-format)
+      (maphash 
+       #'(lambda (key val) 
+           (format f "~%~A~%(:FILE      ~S~% :DIRECTORY ~S~% :NAME      ~S~% :TYPE      ~S)~%"
+                   delim key (elt val 0) (elt val 1) (elt val 2)))
+       hash-table)
+      hash-file-name)))
+
+(defun image-hash-write-all-to-file (directory-pathname)
+  (flet ((writer (hash-table)
+           (image-hash-write-to-file (symbol-value hash-table)
+                                     directory-pathname
+                                     (string-trim '(#\*) (string-downcase hash-table)))))
+    (mapcar #'writer
+            (list '*bmp-hash* '*bmp-gz-hash*
+                  '*jpg-hash* '*jpg-gz-hash*
+                  '*tiff-hash* '*nef-hash* 
+                  '*psd-hash* '*other-hash*))))
+
+
 ;;; ==============================
 
 

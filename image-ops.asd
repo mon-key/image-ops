@@ -31,6 +31,7 @@
    (:file "image-ops-rotate")
    (:file "image-ops-hash-dir-tree")
    (:file "image-ops-docs")
+   #+IS-MON (:file "image-ops-loadtime-bind")
    ))
 
 

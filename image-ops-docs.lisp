@@ -10,7 +10,6 @@
 ;;; ==============================
 ;;; :VARIABLES-DOCUMENTATION
 ;;; ==============================
-;;
 
 (mon:vardoc '*read-image-file-list*
         "Variable holding a list of pathnames.
@@ -36,6 +35,14 @@ It is unset with `unset-special-param-read-image-file-list'.
 "Path to an ImageMagick exectuable.~%~@
 Its value is used by procedures which exectue `sb-ext:run-program'.~%~@
 :SEE-ALSO `mon::verify-image-magic-convert-path'.~%▶▶▶")
+
+(mon:vardoc '*walk-directory-ignorables* 
+"List of directory or filename components which osicat:walk-directory should ignore.~%~@
+Directory names should include traling #\/ \(solidus\).~%~@
+Filenames should _not_ be preceded with leading #\/ \(solidus\).~%~@
+:EXAMPLE~%~@
+ { ... <EXAMPLE> ... } ~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶")
 
 (mon:vardoc '*psd-hash*
 "A hash-table storing pathname information of located files with a `cl:pathname-type' `cl:string-equal' to \"psd\".~%~@
@@ -341,6 +348,36 @@ existing counts are cleared with `image-hash-reset-all'.~%~@
 :EXAMPLE~%~@
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `image-hash-reset-all'.~%▶▶▶")
+
+(mon:fundoc 'image-hash-write-to-file
+ "Write contents of the image-hash HASH-TABLE to a time-stamped file in a deserializable format.~%~@
+Return pathname of file written to.~%~@
+DIRECTORY-PATHNAME names a directory on is created it if it does not already exist.~%~@
+HASH-TABLE-NAME is a string describing a hash-table it is used when generating
+the filename to be written to DIRECTORY-PATHNAME.~%~@
+The namestring of the file written to will have the format:~%
+ <DIRECTORY-PATHNAME><HASH-TABLE-NAME>-YYYY-MM-DD~%~@
+For each key value pair in HASH-TABLE write a string of 68 #\\; characters
+followed by a sequence with the form:~%
+ \(:FILE      \"<FULLY-QUALIFED-NAMESTRING>\"
+  :DIRECTORY \"<FULLY-QUALIFED-DIRECTORY-NAMESTRING>\"
+  :NAME      \"<PATHNAME-NAME>\"
+  :TYPE      \"<PATHNAME-TYPE>\"\)~%~@
+:EXAMPLE~%~@
+ { ... <EXAMPLE> ... } ~%~@
+:SEE-ALSO `image-hash-write-all-to-file'.~%▶▶▶")
+
+(mon:fundoc 'image-hash-write-all-to-file
+        "Write as if by `image-hash-write-to-file' the contents of the all hash-tables
+in the following set of special variables:~%
+ `*bmp-hash*'  `*bmp-gz-hash*'
+ `*jpg-hash*'  `*jpg-gz-hash*'
+ `*tiff-hash*' `*nef-hash*' 
+ `*psd-hash*'  `*other-hash*'~%~@
+Return a list of the pathnames written to.~%~@
+:EXAMPLE~%~@
+ { ... <EXAMPLE> ... } ~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶")
 
 
 ;;; ==============================

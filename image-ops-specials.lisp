@@ -27,17 +27,15 @@
              (and (probe-file #P"/usr/bin/convert")
                   "/usr/bin/convert")))
 
-;; (vardoc '*walk-directory-ignorables* 
-;; List of directory or filename components which osicat:walk-directory should ignore.
-;; directory names should include traling #\/ \(solidus\).
-;; filenames should _not_ be preceded with leading #\/ \(solidus\).
+;; :NOTE There is reader conditional in image-ops/image-ops.asd around #+IS-MON
+;; when when satisfied laods additional less generic system specific ignorables
+;; from :FILE image-ops/image-ops-loadtime-bind.lisp
 (defparameter *walk-directory-ignorables* (list "lost+found/"
-                                                ".BridgeCache"
-                                                ".BridgeCacheT"
-                                                "Thumbs.db"
                                                 ".git/" ".bzr/" ".hg/" ".svn/" "_darcs/" "RCS/" "CVS/" "rcs/" "cvs/"
                                                 ".gitignore" ".hgignore" ".bzrignore"
-                                                ))
+                                                ;;
+                                                ".BridgeCache" ".BridgeCacheT" "Thumbs.db"))
+
 (defvar *psd-scanner* 
   (cl-ppcre:create-scanner "^/.*\\.(psd|PSD)$"))
 
