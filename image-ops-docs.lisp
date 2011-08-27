@@ -392,6 +392,18 @@ reset as if by `cl:clrhash' prior to mapping new keys.~%~@
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
+(mon:fundoc 'image-hash-conversion-perform
+"For each key/value pair in CONVERSION-HASH convert from key to val logging results to LOG-FILE.~%~@
+:EXAMPLE~%~@
+ \(defparameter *long-walking-thread*
+   \(image-hash-map-conversion-perform
+    \(image-hash-map-conversion-extension 
+     *bmp-gz-hash* *source-dest-conversion-hash*
+     \"tif\"
+     :clear-conversion t\)
+    \(make-pathname :directory \(pathname-directory #P\"/some/logging/path/\"\)
+                   :name \(concatenate 'string \"bmp-to-tiff-conversion-\" \(mon:time-string-yyyy-mm-dd\)\)\)\)\)~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶")
 
 ;;; ==============================
 

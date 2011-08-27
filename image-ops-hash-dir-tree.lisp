@@ -255,6 +255,58 @@
            source-hash)
   conversion-hash)
 
+(defun image-hash-conversion-perform (conversion-hash log-file &key (delete-on-success nil) 
+                                                                    (external-format :default))
+  (declare (boolean delete-on-success))
+  (let ;; ((enure-log-file (probe-file log-file))
+       ;;   (log-ensured (if enure-log-file
+       ;;                    enure-log-file
+       ;;                    (error "Arg LOG-FILE does not exist")))
+      ((delim (make-string 68  :initial-element #\;)))
+    (labels ((log-metadata (fname)
+               (let* ((jstream           (make-string-output-stream))
+                      (*standard-output* jstream))
+                 (format jstream "~%;;~%;; exiftool results for ~A~%;;~%~%" fname)
+                 (when
+                     (zerop (sb-ext:process-exit-code
+                             (sb-ext:run-program "/usr/bin/exiftool" 
+                                                 (list "-j" fname)
+                                                 :output *standard-output*)))
+                   (get-output-stream-string jstream))))
+             (log-results (status from to)
+               (with-open-file (s log-file
+                                  :direction :output
+                                  :if-exists :append
+                                  :if-does-not-exist :create
+                                  :external-format external-format
+                                  :element-type 'character)
+                 (if status
+                     (progn 
+                       (format s "~&~A~%;; Successfull conversion ~%;; :FROM ~S~%;; :TO ~S~%" delim from to)
+                       (format t "~&~A~%;; Successfull conversion ~%;; :FROM ~S~%;; :TO ~S~%" delim from to)
+                       (princ (log-metadata from) s)
+                       (princ (log-metadata to)  s)
+                       (terpri s))
+                     (progn
+                       (format s "~&~A~%;; Failed conversion ~%;; :FROM ~S~%;; :TO ~S~%" delim from to)
+                       (format t "~&~A~%;; Failed conversion ~%;; :FROM ~S~%;; :TO ~S~%" delim from to)))))
+             (hash-pair-to-args (key val)
+               (if 
+                (zerop 
+                 (sb-ext:process-exit-code
+                  (sb-ext:run-program *image-magick-convert-path* (list key "-compress" "zip" val))))
+                (progn 
+                  (log-results t key val)
+                  (when delete-on-success 
+                    (delete-file key))
+                  t)
+                (log-results nil key val)))
+             (map-with-lock ()
+               (sb-ext:with-locked-hash-table (conversion-hash)
+                 (maphash #'hash-pair-to-args conversion-hash))))
+      (sb-thread:make-thread #'map-with-lock
+                             :name (format nil "image-hash-conversion-perform-~D" (random most-positive-fixnum))))))
+  
 
 ;;; ==============================
 
