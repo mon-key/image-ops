@@ -9,6 +9,11 @@
 (defpackage #:image-ops (:use #:common-lisp) ;; #+sbcl #:sb-int
             (:export 
              ;;
+             #:*exiftool-path*
+             #:*image-magick-convert-path*
+             #:*image-output-default-thumb-type*
+             #:*valid-image-types*
+             ;;
            ;; image-ops-docs.lisp
              ;;
              #:*PSD-SCANNER* 

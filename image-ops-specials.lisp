@@ -27,6 +27,14 @@
              (and (probe-file #P"/usr/bin/convert")
                   "/usr/bin/convert")))
 
+(defparameter *exiftool-path*
+  #+(or win32 windows) nil 
+  #-sbcl (and (probe-file #P"/usr/bin/exiftool") "/usr/bin/exiftool")
+  #+sbcl (or (mon:executable-find "exiftool")
+             (and (probe-file #P"/usr/bin/exiftool")
+                  "/usr/bin/exiftool")))
+
+
 ;; :NOTE There is reader conditional in image-ops/image-ops.asd around #+IS-MON
 ;; when when satisfied laods additional less generic system specific ignorables
 ;; from :FILE image-ops/image-ops-loadtime-bind.lisp
