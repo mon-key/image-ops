@@ -379,6 +379,19 @@ Return a list of the pathnames written to.~%~@
  { ... <EXAMPLE> ... } ~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
+(mon:fundoc 'image-hash-map-conversion-extension
+        "With filename keys of SOURCE-HASH convert the value to a filename with
+CONVERSION-EXTENSION and storing the original as a new key in CONVERSION-HASH
+with the conversion filename as value.~%~@
+Return CONVERSION-HASH.~%~@
+Keyword CLEAR-CONVERSION is a boolean, when T keys of CONVERSION-HASH will be
+reset as if by `cl:clrhash' prior to mapping new keys.~%~@
+:EXAMPLE~%
+ \(image-hash-map-conversion-extension *bmp-gz-hash* *source-dest-conversion-hash* \"tif\"\)~%~@
+:EXAMPLE~%~@
+ { ... <EXAMPLE> ... } ~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶")
+
 
 ;;; ==============================
 

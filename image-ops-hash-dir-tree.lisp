@@ -236,6 +236,25 @@
                   '*tiff-hash* '*nef-hash* 
                   '*psd-hash* '*other-hash*))))
 
+(defun image-hash-map-conversion-extension (source-hash conversion-hash conversion-extension &key (clear-conversion nil))
+  (declare (string conversion-extension)
+           (boolean clear-conversion))
+  (unless (member conversion-extension *valid-image-types* :test #'string=)
+    (error ":FUNCTION `image-hash-map-conversion-extension' ~
+            -- Arg CONVERSION-EXTENSION not member of `*valid-image-types*', got: ~S"
+           conversion-extension))
+  (when clear-conversion (clrhash conversion-hash))
+  (maphash #'(lambda (key val)
+               ;; our file to convert
+               (setf (gethash key conversion-hash)
+                     (namestring
+                      (make-pathname :directory (pathname-directory (elt val 0))
+                                     :name (elt val 1)
+                                     :type conversion-extension))))
+
+           source-hash)
+  conversion-hash)
+
 
 ;;; ==============================
 

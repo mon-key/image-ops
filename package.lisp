@@ -28,6 +28,7 @@
              #:*TIFF-HASH*  
              #:*PSD-HASH*   
              #:*OTHER-HASH*
+             #:*SOURCE-DEST-CONVERSION-HASH*
              ;;
              ;; 
           ;; image-hash-directory-tree.lisp
@@ -41,6 +42,7 @@
              #:image-hash-reset-all
              #:image-hash-counts-report
              #:walk-directory-images-to-hash
+             #:image-hash-map-conversion-extension
              ;;
            ;; image-ops-rotate.lisp
              #:verify-image-magic-convert-path

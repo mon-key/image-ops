@@ -82,6 +82,10 @@
 
 (defvar *other-hash*  (make-hash-table :test #'equal :synchronized t))
 
+(defvar *source-dest-conversion-hash* (make-hash-table :test #'equal :synchronized t))
+
+
+
 
 ;;; ==============================
 ;; :NOTE This is in clime/clime-specials.lisp
