@@ -49,6 +49,7 @@
              ;; #:%partition-walked-files
              #:image-hash-write-to-file
              #:image-hash-write-all-to-file
+             #:image-hash-write-conversion-hash-to-file
              #:image-hash-reset-all
              #:image-hash-counts-report
              #:walk-directory-images-to-hash

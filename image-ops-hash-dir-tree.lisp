@@ -245,6 +245,39 @@
            source-hash)
   conversion-hash)
 
+(defun image-hash-write-conversion-hash-to-file (conversion-hash-table 
+                                                 directory-pathname 
+                                                 conversion-hash-table-name 
+                                                 &key (external-format :default)
+                                                 (w-comment-delimit nil))
+  (declare (mon:pathname-or-namestring directory-pathname)
+           (boolean w-comment-delimit))
+  (let* ((dir-ensure     (ensure-directories-exist (pathname directory-pathname)))
+         (hash-file-name (and dir-ensure 
+                              (make-pathname :directory (pathname-directory dir-ensure)
+                                             :name (concatenate 'string conversion-hash-table-name '(#\-) (mon:time-string-yyyy-mm-dd)))))
+         (delim          (make-string 68 :initial-element #\;)))
+    (with-open-file (f hash-file-name
+                       :direction         :output
+                       :if-exists         :supersede
+                       :if-does-not-exist :create
+                       :element-type       'character
+                       :external-format   external-format)
+      (format f "~&~A~%;;; :FILE-CREATED ~A~%;;; :FILE ~A ~%~A~%" 
+              delim 
+              #-IS-MON (mon:timestamp-for-file)
+              #+IS-MON (mon:timestamp)
+              (namestring hash-file-name)
+              delim)
+      (flet ((dump-from-to (key val)
+               (if w-comment-delimit 
+                   (format f "~%~A~%(:FROM ~S~% :TO   ~S)~%" delim (pathname key) (pathname val))
+                   (format f "~%(:FROM ~S~% :TO   ~S)~%" (pathname key) (pathname val))
+                   )))
+        (with-hash-table-op (ht conversion-hash-table)
+          (maphash #'dump-from-to ht))
+        hash-file-name))))
+
 (defun image-hash-conversion-perform (conversion-hash log-file &key (delete-on-success nil) 
                                                                     (external-format :default))
   (declare (boolean delete-on-success))

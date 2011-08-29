@@ -423,6 +423,19 @@ reset as if by `cl:clrhash' prior to mapping new keys.~%~@
                    :name \(concatenate 'string \"bmp-to-tiff-conversion-\" \(mon:time-string-yyyy-mm-dd\)\)\)\)\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
+(mon:fundoc 'image-hash-write-conversion-hash-to-file
+"Like `image-hash-write-to-file' but prints a sexp for each key/value pairs
+contained of CONVERSION-HASH-TABLE to a file in DIRECTORY-PATHNAME.
+Unlike `image-hash-write-to-file' prints the `cl:pathname' of key and value.
+Return pathname of file written to.
+Keyword W-COMMENT-DELIMIT is a boolean. 
+When T each key/val sexp written is preceded by a comment line contained fo 68 #\\; characters.
+:EXAMPLE~%
+ \(image-hash-write-conversion-hash-to-file *source-dest-conversion-hash* 
+                                           \(make-pathname :directory '\(:absolute \"tmp\"\)\)
+                                           \"deserializable-conversion-log\"\)~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶")
+
 ;;; ==============================
 
 
