@@ -2,8 +2,6 @@
 ;;; :FILE image-ops/image-ops-hash-dir-tree.lisp
 ;;; ==============================
 
-;; :NOTE Our main function here is `walk-directory-images-to-hash' at BOF
-
 (in-package #:image-ops)
 ;; *package*
 
@@ -57,18 +55,15 @@
       
 (defun %partition-walked-files (rel-file-or-directory-pathname)
   (declare 
-   (special *bmp-hash* *bmp-gz-hash* 
-            *jpg-hash* *jpg-gz-hash*
-            *nef-hash*  *tiff-hash*
-            *psd-hash*  *other-hash*
+   (special *jpg-hash* *jpg-gz-hash*
+            *nef-hash* *tiff-hash*
+            *bmp-hash* *bmp-gz-hash*
+            *psd-hash* *other-hash*
             ;;
-            *psd-scanner*    
-            *jpg-gz-scanner* 
-            *jpg-scanner*    
-            *bmp-scanner*    
-            *bmp-gz-scanner* 
-            *nef-scanner*    
-            *tiff-scanner*)
+            *jpg-scanner* *jpg-gz-scanner* 
+            *bmp-scanner* *bmp-gz-scanner* 
+            *nef-scanner* *tiff-scanner*
+            *psd-scanner*)
    (pathname rel-file-or-directory-pathname) 
    (pathname rel-file-or-directory-pathname)
    (inline %ensure-simple-namestring) 
@@ -94,24 +89,26 @@
                    ;; pathname-name
                    ;; (if gz  (cl-ppcre:register-groups-bind (ext dot gz)  (*extension-gz-scanner* (aref extension 0))
                    (let ((extension0 (aref extension 0)))
-                     (sb-ext:with-locked-hash-table (hash)
+                     ;; (sb-ext:with-locked-hash-table (hash)
+                     (with-hash-table-op (scnr-hash hash)
                        (if (string= "gz" extension0 :start2 (- (length extension0)  2))
-                           (setf (gethash match-string hash)
+                           (setf (gethash match-string scnr-hash) ;; hash)
                                  (list (directory-namestring match-string)
                                        (pathname-name (pathname-name match-string))
                                        extension0))
-                       
-                           (setf (gethash match-string hash)
+                           (setf (gethash match-string scnr-hash) ;; hash)
                                  (list (directory-namestring match-string)
                                        (pathname-name match-string)
                                        extension0)))))
                    t)))
              (push-other ()
-               (sb-ext:with-locked-hash-table (*other-hash*)
-                 (and (setf (gethash regular-namestring *other-hash*) 
-                            (list (directory-namestring regular-namestring)
-                                  (pathname-name regular-namestring)
-                                  (pathname-type regular-namestring)))
+               ;; (sb-ext:with-locked-hash-table (*other-hash*)
+               (with-hash-table-op (ht-oh *other-hash*)
+                 (and  ;; (setf (gethash regular-namestring *other-hash*) 
+                  (setf (gethash regular-namestring ht-oh) 
+                        (list (directory-namestring regular-namestring)
+                              (pathname-name regular-namestring)
+                              (pathname-type regular-namestring)))
                       t)))
              (map-pairs ()
                (loop 
@@ -122,13 +119,13 @@
                                        ;;   (,*bmp-gz-scanner* . ,*bmp-gz-hash*)
                                        ;;   (,*nef-scanner*    . ,*nef-hash*)
                                        ;;   (,*tiff-scanner*   . ,*tiff-hash*))
-                    (list (cons *psd-scanner*     *psd-hash*)
+                    (list (cons *jpg-scanner*     *jpg-hash*)
                           (cons *jpg-gz-scanner*  *jpg-gz-hash*)
-                          (cons *jpg-scanner*     *jpg-hash*)
+                          (cons *nef-scanner*     *nef-hash*)
+                          (cons *tiff-scanner*    *tiff-hash*)
                           (cons *bmp-scanner*     *bmp-hash*)
                           (cons *bmp-gz-scanner*  *bmp-gz-hash*)
-                          (cons *nef-scanner*     *nef-hash*)
-                          (cons *tiff-scanner*    *tiff-hash*))
+                          (cons *psd-scanner*     *psd-hash*))
                   ;; for chk = (cache-if-image (symbol-value fun) (symbol-value cache))
                   for chk = (cache-if-image fun cache)
                   ;do (print chk *standard-output*)
@@ -142,46 +139,41 @@
 (defun image-hash-reset-all ()
   ;; (image-hash-reset-all)
   (declare 
-   (special *bmp-hash* *bmp-gz-hash* 
-            *jpg-hash* *jpg-gz-hash*
-            *nef-hash*  *tiff-hash*
-            *psd-hash*  *other-hash*)
+   (special *jpg-hash* *jpg-gz-hash*
+            *nef-hash* *tiff-hash*
+            *bmp-hash* *bmp-gz-hash* 
+            *psd-hash* *other-hash*)
    (optimize (speed 3)))
-  (mapc #'(lambda (hash)
-            (sb-ext:with-locked-hash-table (hash)
-              (clrhash hash)))
-        (list *nef-hash*
-              *bmp-hash*
-              *bmp-gz-hash*
-              *jpg-hash*
-              *jpg-gz-hash*
-              *psd-hash*
-              *tiff-hash*
-              *other-hash*)))
+  (flet ((clear-it (hash-to-clear))
+         (with-hash-table-op (ht hash-to-clear)
+           (clrhash ht)))
+    ;; (mapc #'(lambda (hash) (sb-ext:with-locked-hash-table (hash) (clrhash hash)))
+    (mapc #'clear-it (list *jpg-hash* *jpg-gz-hash*
+                           *nef-hash* *tiff-hash*
+                           *bmp-hash* *bmp-gz-hash*
+                           *psd-hash* *other-hash*))))
 
 (defun image-hash-counts-report ()
   ;; (image-hash-counts-report)
-  (declare (special *bmp-hash* *bmp-gz-hash* 
-                    *jpg-hash* *jpg-gz-hash*
-                    *nef-hash*  *tiff-hash*
-                    *psd-hash*  *other-hash*)
+  (declare (special *jpg-hash* *jpg-gz-hash*
+                    *nef-hash* *tiff-hash*
+                    *bmp-hash* *bmp-gz-hash*
+                    *psd-hash* *other-hash*)
            (optimize (speed 3)))
-  (flet ((ht-and-count (ht)
-           (sb-ext:with-locked-hash-table (ht)
+  (flet ((ht-and-count (counting-hash)
+           ;; (sb-ext:with-locked-hash-table (counting-hash)
+           ;;   (hash-table-count counting-hash))
+           (with-hash-table-op  (ht  counting-hash)
              (hash-table-count ht))))
-    (pairlis (list 
-              '*nef-hash*
-              '*bmp-hash*
-              '*bmp-gz-hash*
-              '*jpg-hash*
-              '*jpg-gz-hash*
-              '*psd-hash*
-              '*tiff-hash*
-              '*other-hash*)
-             (mapcar #'ht-and-count (list *nef-hash* *bmp-hash* *bmp-gz-hash* *jpg-hash*
-                                          *jpg-gz-hash* *psd-hash* *tiff-hash* *other-hash*)))))
+    (pairlis (list '*jpg-hash* '*jpg-gz-hash*
+                   '*nef-hash* '*tiff-hash*
+                   '*bmp-hash* '*bmp-gz-hash*                   
+                   '*psd-hash* '*other-hash*)
+             (mapcar #'ht-and-count (list *jpg-hash*  *jpg-gz-hash* 
+                                          *nef-hash*  *tiff-hash* 
+                                          *bmp-hash*  *bmp-gz-hash*
+                                          *psd-hash*  *other-hash*)))))
 
-;; Our main function 
 (defun %walk-directory-images-to-hash (directory-pathname &key (clear-count t))
   (declare ((or pathname string) directory-pathname)
            (boolean clear-count)
@@ -195,7 +187,6 @@
   (osicat:walk-directory (%ensure-simple-namestring directory-pathname)
                          #'%partition-walked-files
                          :directories :breadth-first ;;  :depth-first
-                         ;; :directories :depth-first
                          :test #'%absolute-existent-file-or-directory)
   (image-hash-counts-report))
 
@@ -218,28 +209,22 @@
                        :if-does-not-exist :create
                        :element-type       'character
                        :external-format   external-format)
-      (labels ((hash-file-writer (key val)
-                 (format f "~%~A~%(:FILE      ~S~% :DIRECTORY ~S~% :NAME      ~S~% :TYPE      ~S)~%"
-                         delim key (elt val 0) (elt val 1) (elt val 2)))
-               (hash-file-mapper ()
-                 #-sbcl (maphash #'hash-file-writer hash-table)
-                 #+sbcl (if (sb-ext:hash-table-synchronized-p hash-table)
-                            (sb-ext:with-locked-hash-table (hash-table)
-                              (maphash #'hash-file-writer hash-table))
-                            (maphash #'hash-file-writer hash-table))))
-        (hash-file-mapper)
-        hash-file-name))))
+      (flet ((hash-file-writer (key val)
+               (format f "~%~A~%(:FILE      ~S~% :DIRECTORY ~S~% :NAME      ~S~% :TYPE      ~S)~%"
+                       delim key (elt val 0) (elt val 1) (elt val 2))))
+        (with-hash-table-op (ht hash-table)
+          (maphash #'hash-file-writer ht)))
+      hash-file-name)))
 
 (defun image-hash-write-all-to-file (directory-pathname)
   (flet ((writer (hash-table)
            (image-hash-write-to-file (symbol-value hash-table)
                                      directory-pathname
                                      (string-trim '(#\*) (string-downcase hash-table)))))
-    (mapcar #'writer
-            (list '*bmp-hash* '*bmp-gz-hash*
-                  '*jpg-hash* '*jpg-gz-hash*
-                  '*tiff-hash* '*nef-hash* 
-                  '*psd-hash* '*other-hash*))))
+    (mapcar #'writer (list '*jpg-hash* '*jpg-gz-hash*
+                           '*nef-hash* '*tiff-hash* 
+                           '*bmp-hash* '*bmp-gz-hash*
+                           '*psd-hash* '*other-hash*))))
 
 (defun image-hash-map-conversion-extension (source-hash conversion-hash conversion-extension &key (clear-conversion nil))
   (declare (string conversion-extension)
@@ -296,22 +281,23 @@
                        (format s "~&~A~%;; Failed conversion ~%;; :FROM ~S~%;; :TO   ~S~%" delim from to)
                        (format t "~&~A~%;; Failed conversion ~%;; :FROM ~S~%;; :TO   ~S~%" delim from to)))))
              (hash-pair-to-args (key val)
-               (if 
-                (zerop 
-                 (sb-ext:process-exit-code
-                  (sb-ext:run-program *image-magick-convert-path* (list key "-compress" "zip" val))))
-                (progn 
-                  (log-results t key val)
-                  (when delete-on-success 
-                    (delete-file key))
-                  t)
-                (log-results nil key val)))
+               (if (zerop 
+                    (sb-ext:process-exit-code
+                     (sb-ext:run-program *image-magick-convert-path* (list key "-compress" "zip" val))))
+                   (progn 
+                     (log-results t key val)
+                     (when delete-on-success 
+                       (delete-file key))
+                     t)
+                   (log-results nil key val)))
              (map-with-lock ()
-               (sb-ext:with-locked-hash-table (conversion-hash)
-                 (maphash #'hash-pair-to-args conversion-hash))))
+               ;; (sb-ext:with-locked-hash-table (conversion-hash)
+               ;;   (maphash #'hash-pair-to-args conversion-hash))
+               (with-hash-table-op (ht conversion-hash)
+                 (maphash #'hash-pair-to-args ht))))
       (sb-thread:make-thread #'map-with-lock
                              :name (format nil "image-hash-conversion-perform-~D" (random most-positive-fixnum))))))
-  
+
 
 ;;; ==============================
 
