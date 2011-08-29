@@ -218,12 +218,17 @@
                        :if-does-not-exist :create
                        :element-type       'character
                        :external-format   external-format)
-      (maphash 
-       #'(lambda (key val) 
-           (format f "~%~A~%(:FILE      ~S~% :DIRECTORY ~S~% :NAME      ~S~% :TYPE      ~S)~%"
-                   delim key (elt val 0) (elt val 1) (elt val 2)))
-       hash-table)
-      hash-file-name)))
+      (labels ((hash-file-writer (key val)
+                 (format f "~%~A~%(:FILE      ~S~% :DIRECTORY ~S~% :NAME      ~S~% :TYPE      ~S)~%"
+                         delim key (elt val 0) (elt val 1) (elt val 2)))
+               (hash-file-mapper ()
+                 #-sbcl (maphash #'hash-file-writer hash-table)
+                 #+sbcl (if (sb-ext:hash-table-synchronized-p hash-table)
+                            (sb-ext:with-locked-hash-table (hash-table)
+                              (maphash #'hash-file-writer hash-table))
+                            (maphash #'hash-file-writer hash-table))))
+        (hash-file-mapper)
+        hash-file-name))))
 
 (defun image-hash-write-all-to-file (directory-pathname)
   (flet ((writer (hash-table)
@@ -282,14 +287,14 @@
                                   :element-type 'character)
                  (if status
                      (progn 
-                       (format s "~&~A~%;; Successfull conversion ~%;; :FROM ~S~%;; :TO ~S~%" delim from to)
-                       (format t "~&~A~%;; Successfull conversion ~%;; :FROM ~S~%;; :TO ~S~%" delim from to)
+                       (format s "~&~A~%;; Successfull conversion ~%;; :FROM ~S~%;; :TO   ~S~%" delim from to)
+                       (format t "~&~A~%;; Successfull conversion ~%;; :FROM ~S~%;; :TO   ~S~%" delim from to)
                        (princ (log-metadata from) s)
                        (princ (log-metadata to)  s)
                        (terpri s))
                      (progn
-                       (format s "~&~A~%;; Failed conversion ~%;; :FROM ~S~%;; :TO ~S~%" delim from to)
-                       (format t "~&~A~%;; Failed conversion ~%;; :FROM ~S~%;; :TO ~S~%" delim from to)))))
+                       (format s "~&~A~%;; Failed conversion ~%;; :FROM ~S~%;; :TO   ~S~%" delim from to)
+                       (format t "~&~A~%;; Failed conversion ~%;; :FROM ~S~%;; :TO   ~S~%" delim from to)))))
              (hash-pair-to-args (key val)
                (if 
                 (zerop 

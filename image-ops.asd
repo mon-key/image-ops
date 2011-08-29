@@ -28,6 +28,7 @@
   :components
   ((:file "package") 
    (:file "image-ops-specials")
+   (:file "image-ops-macros")
    (:file "image-ops-rotate")
    (:file "image-ops-hash-dir-tree")
    (:file "image-ops-docs")

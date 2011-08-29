@@ -136,6 +136,24 @@ Its `cl:hash-table-test' is `cl:equal'.~%~@
 ;;; :FUNCTIONS-DOCUMENTATION
 ;;; ==============================
 
+(mon:fundoc 'with-hash-table-op
+            "Execute BODY with HASH-VAR dynmically bound to HASH-TABLE.~%~@
+On SBCL if HASH-TABLE satisfies `sb-ext:hash-table-synchronized-p' BODY is
+evaluated inside `sb-ext:with-locked-hash-table'.~%~@
+:EXAMPLE~%
+ \(macroexpand-1 '\(with-hash-table-op \(bubba *bmp-gz-hash*\)
+                  \(with-open-file \(f \(make-pathname :directory
+                                                    \(pathname-directory #P\"/tmp/\"\)
+                                                    :name \"testing\"\)
+                                   :direction :output
+                                   :if-does-not-exist :create
+                                   :if-exists :supersede
+                                   :element-type 'character\)
+                    \(maphash #'\(lambda \(key value\)
+                                 \(print \(list key value\) f\)\)
+                     bubba\)\)\)\)
+:SEE-ALSO `<XREF>'.~%▶▶▶")
+
 (mon:fundoc 'verify-image-magic-convert-path
 "Return T if variable `*image-magick-convert-path*' is `boundp' and its value is `string-not-empty-p.~%~@
 An error is signaled if not.~%~@

@@ -14,7 +14,7 @@
              #:*image-output-default-thumb-type*
              #:*valid-image-types*
              ;;
-           ;; image-ops-docs.lisp
+           ;; image-ops-specials.lisp
              ;;
              #:*PSD-SCANNER* 
              #:*JPG-GZ-SCANNER* 
@@ -36,7 +36,12 @@
              #:*SOURCE-DEST-CONVERSION-HASH*
              ;;
              ;; 
-          ;; image-hash-directory-tree.lisp
+             ;;
+           ;; image-ops/image-ops-macros.lisp
+             ;; 
+             ;; #:with-hash-table-op
+             ;;
+           ;; image-hash-directory-tree.lisp
              ;;
              ;; #:%absolute-existent-file-or-directory
              ;; #:%ensure-simple-namestring
