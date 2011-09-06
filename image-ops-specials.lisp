@@ -39,6 +39,8 @@
 ;; when when satisfied laods additional less generic system specific ignorables
 ;; from :FILE image-ops/image-ops-loadtime-bind.lisp
 (defparameter *walk-directory-ignorables* (list "lost+found/"
+                                                ;; :NOTE elements of this list are checked with `cl:string='.
+                                                ;; "SCCS" "MCVS"
                                                 ".git/" ".bzr/" ".hg/" ".svn/" "_darcs/" "RCS/" "CVS/" "rcs/" "cvs/"
                                                 ".gitignore" ".hgignore" ".bzrignore"
                                                 ;;
