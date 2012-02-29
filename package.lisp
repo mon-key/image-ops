@@ -67,9 +67,10 @@
              #:write-fprint0-file-for-image-files-in-pathname
              #:resize-image-files-in-fprint0-file
              #:rotate-image-files-in-dir-list
-
+             ;; image-ops-iphone.lisp
+             #:translate-pathname-iphone-image
            ;; image-ops-docs.lisp
-
+             
              ))
 
 

@@ -441,6 +441,26 @@ preceded by a comment line contained fo 68 #\\; characters.~%~@
                                            \"deserializable-conversion-log\"\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
+
+;;; ==============================
+;; image-ops/image-ops-iphone.lisp
+;;; ==============================
+
+(mon:fundoc 'translate-pathname-iphone-image
+"Return a converted iphone image pathname.~%~@
+Given a pathname having either of the forms:~%
+ #P\"/foo/bar/IMG_NNNN.JPG\"
+ #P\"/foo/bar/IMG_NNNN.jpg\"
+return value is of the form:~%
+ #P\"/foo/bar/NNNN-<FILE-WRITE-DATE>.jpg\"~%
+If PATHNAME-OR-NAMESTRING does not match the patter above return NIL.~%~@
+PATHNAME-OR-NAMESTRING must name an existing file, an error is signaled if not.~%~@
+:EXAMPLE~%
+ \(translate-pathname-iphone-image \"/foo/bar/3936_SOLD/IMG_0319.jpg\"\)~%
+ \(translate-pathname-iphone-image \"/foo/bar/IMG_0319.JPG\"\)~%
+ \(null \(translate-pathname-iphone-image \"/foo/bar/IMG_0319mmmmm.JPG\"\)\)~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶")
+
 ;;; ==============================
 
 
