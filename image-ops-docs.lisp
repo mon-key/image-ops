@@ -461,6 +461,16 @@ PATHNAME-OR-NAMESTRING must name an existing file, an error is signaled if not.~
  \(null \(translate-pathname-iphone-image \"/foo/bar/IMG_0319mmmmm.JPG\"\)\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
+(mon:fundoc 'rename-file-iphone-images-in-directory
+"Rename each file matching the pattern IMG_NNNN.JPG in BASE-DIRECTORY.~%~@
+Rename to NNNN-ip-YYYY-MM-DDTHHMMSS.jpg as if by `translate-pathname-iphone-image'.~%~@
+Return a list with each element a list having the form:~%
+ \(<RENAME-TO-PATHNAME> <RENAME-FROM-PATHNAME>\)~%~@
+Signal an error if probe-file does not find BASE-DIRECTORY.
+:EXAMPLE~%
+ \(rename-file-iphone-images-in-directory \"/some/path/with/iphone/images/\"\)~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶")
+
 ;;; ==============================
 
 
