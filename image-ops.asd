@@ -23,7 +23,7 @@
   :license "MIT" 
   :description "image operations agglomerated"
   :version "1.0.0"
-  :depends-on (:mon :tiff4cl) ;; :image-ops-jpeg
+  :depends-on (:mon :local-time :tiff4cl) ;; :image-ops-jpeg
   :serial t    
   :components
   ((:file "package") 
