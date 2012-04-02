@@ -58,16 +58,59 @@
                             :name buffer 
                             :type "jpg")))))))
 
-(defun rename-file-iphone-images-in-directory (base-directory)
+;; (defun directory-jpg-images (base-directory &key (wilden nil))
+;; (let ((wild-jpeg-scanner (cl-ppcre:create-scanner "(?i)^jpe?g$" :case-insensitive-mode t)))
+;; find all pathnames  beneath BASE-DIRECTORY with pathname-tyeps matching the regular expression 
+;; \"^jpe?g$\" 
+(defun directory-jpg-images (base-directory &key (wilden nil) (case-mode nil))
+  (declare (type (or boolean (eql :wild) (eql :wild-inferiors)) wilden)
+           (type (or null
+                     (eql :upcase) 
+                     (eql :downcase)
+                     (eql :insensitive)) case-mode))
+  (let* ((maybe-wilden-directory 
+           (if (probe-file base-directory)
+               (make-pathname :directory (ecase wilden
+                                           ((:wild-inferiors :wild)
+                                            `(,@(pathname-directory base-directory) ,wilden))
+                                           ((t)
+                                            `(,@(pathname-directory base-directory) ,:wild))
+                                           ((nil) `(,@(pathname-directory base-directory))))
+                              :name :wild
+                              :type :wild)
+               (error ":FUNCTION `directory-jpg-images' -- ~
+                       arg BASE-DIRECTORY non-existent~% got: ~S" 
+                      base-directory)))
+         (wild-jpeg-scanner 
+           (cl-ppcre:create-scanner (ecase case-mode
+                                      (:upcase
+                                       (cl-ppcre:create-scanner "^JPE?G$" :case-insensitive-mode nil))
+                                      (:downcase 
+                                       (cl-ppcre:create-scanner "^jpe?g$" :case-insensitive-mode nil))
+                                      ((:insensitive nil) 
+                                       (cl-ppcre:create-scanner "^jpe?g$" :case-insensitive-mode t))))))
+    (flet ((maybe-match (path-type) 
+             (cl-ppcre:scan wild-jpeg-scanner path-type)))
+      (remove-if-not #'maybe-match
+                     (directory maybe-wilden-directory)
+                     :key #'pathname-type))))
+
+(defun rename-file-iphone-images-in-directory (base-directory &key (wilden nil))
+  (declare (type (or boolean (eql :wild) (eql :wild-inferiors)) wilden))
   (unless (probe-file base-directory)
     (error ":FUNCTION `rename-file-iphone-images-in-directory' -- ~
              arg BASE-DIRECTORY non-existent~% got: ~S" 
            base-directory))
-  (let* ((wild-jpgs (make-pathname :directory `(,@(pathname-directory base-directory))
+  (let* ((wild-jpgs (make-pathname :directory (ecase wilden
+                                                ((:wild-inferiors :wild)
+                                                 `(,@(pathname-directory base-directory) ,wilden))
+                                                ((t)
+                                                 `(,@(pathname-directory base-directory) ,:wild))
+                                                ((nil) `(,@(pathname-directory base-directory))))
                                    :name :wild
                                    :type "JPG"))
          (maybe-find-jpgs (directory wild-jpgs)))
-    (if (null maybe-find-jpgs)
+  (if (null maybe-find-jpgs)
         nil
         (flet ((maybe-translate-pathname-iphone-image (pathname)
                  (let ((maybe-transformed (translate-pathname-iphone-image pathname)))
@@ -76,10 +119,9 @@
                     pathname))))
           (map 'list #'maybe-translate-pathname-iphone-image maybe-find-jpgs)))))
 
-;; (directory "foo/*.[jJ][Pp][Gg]")
 
 ;; (directory "foo/*.[jJ][Pp][Gg]")
-
+;; (directory "foo/*.[jJ][Pp][Gg]")
 ;; (directory "foo/*.[jJ][Pp]*[Gg]")
 
 ;; remove files found by matching on pathname-type

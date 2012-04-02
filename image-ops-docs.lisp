@@ -466,10 +466,41 @@ PATHNAME-OR-NAMESTRING must name an existing file, an error is signaled if not.~
 Rename to NNNN-ip-YYYY-MM-DDTHHMMSS.jpg as if by `translate-pathname-iphone-image'.~%~@
 Return a list with each element a list having the form:~%
  \(<RENAME-TO-PATHNAME> <RENAME-FROM-PATHNAME>\)~%~@
-Signal an error if probe-file does not find BASE-DIRECTORY.
+Signal an error if probe-file does not find BASE-DIRECTORY.~%~@
+Keyword WILDEN when non-nil should it should be either T, :wild, or :wild-inferiors.
+When WILDEN is either T or :WILD the BASE-DIRECTORY is searched with a :wild
+pathname component. When WILDEN is :WILD-INFERIORS BASE-DIRECTORY is searched
+with a :WILD-INFERIORS component.
+For example, if BASE-DIRECTORY is #P\"/foo/bar/\" and WILDEN is null or ommitted
+the path searched would be #P\"/foo/bar/*.JPG\"~%
+If WILDEN is T or :wild, the path searched would be #P\"/foo/bar/*/*.JPG\"~%
+If WILDEN is :wild-inferiors the path searched would be #P\"/foo/bar/**/*.JPG\"~%~@
 :EXAMPLE~%
  \(rename-file-iphone-images-in-directory \"/some/path/with/iphone/images/\"\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
+
+(mon:fundoc 'directory-jpg-images
+"Find pathnames beneath BASE-DIRECTORY with pathname-tyeps matching the
+ppcre regular expression \"^jpe?g$\".~%~@
+BASE-DIRECTORY is a pathname designating a fully qualified directory.
+Signal an error if probe-file does not find BASE-DIRECTORY.~%~@
+Keyword WILDEN when non-nil should be either T, :wild, or :wild-inferiors.
+When WILDEN is either T or :WILD the BASE-DIRECTORY is searched with a :wild
+pathname component. When WILDEN is :WILD-INFERIORS BASE-DIRECTORY is searched
+with a :WILD-INFERIORS component.
+For example, if BASE-DIRECTORY is #P\"/foo/bar/\" and WILDEN is null or ommitted
+the path searched would be #P\"/foo/bar/*.*\"~%
+If WILDEN is T or :wild, the path searched would be #P\"/foo/bar/*/*.*\"~%
+If WILDEN is :wild-inferiors the path searched would be #P\"/foo/bar/**/*.*\"~%~@
+Keyword CASE-MODE when non-nil should be either :upcase :downcase or :insensitive.
+When CASE-MODE is either null or :insensitive do not consider case as
+significant when matching pathname-type with the regular epxression.
+When CASE-MODE is :upcase only pathname-types with all capital characters are matched.
+When CASE-MODE is :downcase only pathname-types with all lowercase characters are matched.~%~@
+:EXAMPLE~%~@
+ { ... <EXAMPLE> ... } ~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶")
+
 
 ;;; ==============================
 
