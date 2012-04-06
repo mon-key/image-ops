@@ -447,19 +447,25 @@ preceded by a comment line contained fo 68 #\\; characters.~%~@
 ;;; ==============================
 
 (mon:fundoc 'translate-pathname-iphone-image
-"Return a converted iphone image pathname.~%~@
+            "Return a converted iphone image pathname.~%~@
 Given a pathname having either of the forms:~%
  #P\"/foo/bar/IMG_NNNN.JPG\"
  #P\"/foo/bar/IMG_NNNN.jpg\"
 return value is of the form:~%
  #P\"/foo/bar/NNNN-<FILE-WRITE-DATE>.jpg\"~%
-If PATHNAME-OR-NAMESTRING does not match the patter above return NIL.~%~@
+If PATHNAME-OR-NAMESTRING does not match the pattern above return NIL.~%~@
 PATHNAME-OR-NAMESTRING must name an existing file, an error is signaled if not.~%~@
+Keyword CASE-MODE indicates how case sensitvity is used when matching the
+cl:pathname-type of PATHNAME-OR-NAMESTRING.
+Valid arguments are :upcase :downcase :insensitive and indicate as follows:~%
+ - when CASE-MODE is :upcase \(the default\) only match \"JPG\"
+ - when CASE-MODE is :downcase only match \"jpg\"
+ - when CASE-MODE is insensitive match either \"JPG\" or \"jpg\"~%~@
 :EXAMPLE~%
- \(translate-pathname-iphone-image \"/foo/bar/3936_SOLD/IMG_0319.jpg\"\)~%
+ \(translate-pathname-iphone-image \"/foo/bar/3936_SOLD/IMG_0319.jpg\" :case-mode :downcase \)~%
  \(translate-pathname-iphone-image \"/foo/bar/IMG_0319.JPG\"\)~%
  \(null \(translate-pathname-iphone-image \"/foo/bar/IMG_0319mmmmm.JPG\"\)\)~%~@
-:SEE-ALSO `<XREF>'.~%▶▶▶")
+:SEE-ALSO `rename-file-iphone-images-in-directory', `directory-jpg-images'.~%▶▶▶")
 
 (mon:fundoc 'rename-file-iphone-images-in-directory
 "Rename each file matching the pattern IMG_NNNN.JPG in BASE-DIRECTORY.~%~@
@@ -475,9 +481,15 @@ For example, if BASE-DIRECTORY is #P\"/foo/bar/\" and WILDEN is null or ommitted
 the path searched would be #P\"/foo/bar/*.JPG\"~%
 If WILDEN is T or :wild, the path searched would be #P\"/foo/bar/*/*.JPG\"~%
 If WILDEN is :wild-inferiors the path searched would be #P\"/foo/bar/**/*.JPG\"~%~@
+Keyword CASE-MODE indicates how case sensitvity is used when matching the
+cl:pathname-type of PATHNAME-OR-NAMESTRING.
+Valid arguments are :upcase :downcase :insensitive and indicate as follows:
+ - when CASE-MODE is :upcase \(the default\) only match \"JPG\"
+ - when CASE-MODE is :downcase only match \"jpg\"
+ - when CASE-MODE is insensitive match either \"JPG\" or \"jpg\"~%~@
 :EXAMPLE~%
  \(rename-file-iphone-images-in-directory \"/some/path/with/iphone/images/\"\)~%~@
-:SEE-ALSO `<XREF>'.~%▶▶▶")
+:SEE-ALSO `directory-jpg-images'.~%▶▶▶")
 
 (mon:fundoc 'directory-jpg-images
 "Find pathnames beneath BASE-DIRECTORY with pathname-tyeps matching the
@@ -499,7 +511,7 @@ When CASE-MODE is :upcase only pathname-types with all capital characters are ma
 When CASE-MODE is :downcase only pathname-types with all lowercase characters are matched.~%~@
 :EXAMPLE~%~@
  { ... <EXAMPLE> ... } ~%~@
-:SEE-ALSO `<XREF>'.~%▶▶▶")
+:SEE-ALSO `translate-pathname-iphone-image', `rename-file-iphone-images-in-directory'.~%▶▶▶")
 
 
 ;;; ==============================

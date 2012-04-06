@@ -39,24 +39,31 @@
 ;;             (map 'list #'parse-integer 
 ;;                  (list second minute hour day month year))
 ;;             ))))
-
-(defun translate-pathname-iphone-image (pathname-or-namestring)
+(defun translate-pathname-iphone-image (pathname-or-namestring &key (case-mode :upcase))
+  (declare (type (or (eql :upcase) 
+                     (eql :downcase)
+                     (eql :insensitive)) case-mode))
   (let ((fname (file-namestring pathname-or-namestring)))
-    (when (>= (mon:string-length fname) 12)
-      (destructuring-bind (img num ext &rest rest) (mon:string-subdivide fname 4)
-        (and (not rest)
-             (string= img "IMG_")
-             (every #'digit-char-p num)
-             (string-equal ext ".JPG")
-             (let ((buffer (make-array 27 :element-type 'character :fill-pointer 0)))
-               (with-output-to-string (output buffer)
-                 ;;(format output "~4,'0d-" num)
-                 (format output "~6,'0d-ip-" (parse-integer num))
-                 (mon::format-timestring output (local-time:universal-to-timestamp (file-write-date pathname-or-namestring))
-                                         :format mon:*timestamp-for-file-format*))
-               (make-pathname :directory (pathname-directory pathname-or-namestring)
-                            :name buffer 
-                            :type "jpg")))))))
+    (flet ((ext-compare (extension)
+             (ecase case-mode
+               (:upcase (string= extension ".JPG"))
+               (:downcase (string= extension ".jpg"))
+               (:insensitive (string-equal extension ".JPG")))))
+      (when (>= (mon:string-length fname) 12)
+        (destructuring-bind (img num ext &rest rest) (mon:string-subdivide fname 4)
+          (and (not rest)
+               (string= img "IMG_")
+               (every #'digit-char-p num)
+               (ext-compare ext)
+               (let ((buffer (make-array 27 :element-type 'character :fill-pointer 0)))
+                 (with-output-to-string (output buffer)
+                   ;;(format output "~4,'0d-" num)
+                   (format output "~6,'0d-ip-" (parse-integer num))
+                   (mon::format-timestring output (local-time:universal-to-timestamp (file-write-date pathname-or-namestring))
+                                           :format mon:*timestamp-for-file-format*))
+                 (make-pathname :directory (pathname-directory pathname-or-namestring)
+                                :name buffer 
+                                :type "jpg"))))))))
 
 ;; (defun directory-jpg-images (base-directory &key (wilden nil))
 ;; (let ((wild-jpeg-scanner (cl-ppcre:create-scanner "(?i)^jpe?g$" :case-insensitive-mode t)))
@@ -95,31 +102,38 @@
                      (directory maybe-wilden-directory)
                      :key #'pathname-type))))
 
-(defun rename-file-iphone-images-in-directory (base-directory &key (wilden nil))
-  (declare (type (or boolean (eql :wild) (eql :wild-inferiors)) wilden))
+(defun rename-file-iphone-images-in-directory (base-directory &key (wilden nil)
+                                                                   (case-mode :upcase))
+  (declare (type (or boolean (eql :wild) (eql :wild-inferiors)) wilden)
+           (type (or (eql :upcase) 
+                     (eql :downcase)
+                     (eql :insensitive)) case-mode))
   (unless (probe-file base-directory)
     (error ":FUNCTION `rename-file-iphone-images-in-directory' -- ~
              arg BASE-DIRECTORY non-existent~% got: ~S" 
            base-directory))
-  (let* ((wild-jpgs (make-pathname :directory (ecase wilden
-                                                ((:wild-inferiors :wild)
-                                                 `(,@(pathname-directory base-directory) ,wilden))
-                                                ((t)
-                                                 `(,@(pathname-directory base-directory) ,:wild))
-                                                ((nil) `(,@(pathname-directory base-directory))))
-                                   :name :wild
-                                   :type "JPG"))
-         (maybe-find-jpgs (directory wild-jpgs)))
-  (if (null maybe-find-jpgs)
+  ;; (let* ((wild-jpgs (make-pathname :directory (ecase wilden
+  ;;                                               ((:wild-inferiors :wild)
+  ;;                                                `(,@(pathname-directory base-directory) ,wilden))
+  ;;                                               ((t)
+  ;;                                                `(,@(pathname-directory base-directory) ,:wild))
+  ;;                                               ((nil) `(,@(pathname-directory base-directory))))
+  ;;                                  :name :wild
+  ;;                                  :type "JPG"))
+  ;;        (maybe-find-jpgs (directory wild-jpgs)))
+  (let ((maybe-find-jpgs (directory-jpg-images base-directory
+                                               :wilden wilden
+                                               :case-mode case-mode)))
+    (if (null maybe-find-jpgs)
         nil
         (flet ((maybe-translate-pathname-iphone-image (pathname)
-                 (let ((maybe-transformed (translate-pathname-iphone-image pathname)))
+                 (let ((maybe-transformed (translate-pathname-iphone-image pathname :case-mode case-mode)))
                    (list
                     (and maybe-transformed (rename-file pathname maybe-transformed))
                     pathname))))
           (map 'list #'maybe-translate-pathname-iphone-image maybe-find-jpgs)))))
 
-
+;; sbcl allows this:
 ;; (directory "foo/*.[jJ][Pp][Gg]")
 ;; (directory "foo/*.[jJ][Pp][Gg]")
 ;; (directory "foo/*.[jJ][Pp]*[Gg]")
