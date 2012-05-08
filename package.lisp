@@ -68,7 +68,14 @@
              #:resize-image-files-in-fprint0-file
              #:rotate-image-files-in-dir-list
              ;; image-ops-iphone.lisp
+             #:directory-jpg-images             
              #:translate-pathname-iphone-image
+             #:rename-file-iphone-images-in-directory
+             ;;
+             ;; image-ops-nikon-nef.lisp
+             #:directory-nef-images
+             #:translate-pathname-nef-image
+             #:rename-file-nef-images-in-directory
            ;; image-ops-docs.lisp
              
              ))

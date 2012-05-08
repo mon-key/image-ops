@@ -40,6 +40,7 @@
 ;;                  (list second minute hour day month year))
 ;;             ))))
 
+
 (defun translate-pathname-nef-image (pathname-or-namestring &key (case-mode :upcase))
   (declare (type (or (eql :upcase) 
                      (eql :downcase)
