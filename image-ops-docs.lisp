@@ -515,6 +515,80 @@ When CASE-MODE is :downcase only pathname-types with all lowercase characters ar
 
 
 ;;; ==============================
+(mon:fundoc 'translate-pathname-iphone-image
+            "Return a converted iphone image pathname.~%~@
+Given a pathname having either of the forms:~%
+ #P\"/foo/bar/DSC_NNNN.NEF\"
+ #P\"/foo/bar/DSC_NNNN.nef\"
+return value is of the form:~%
+ #P\"/foo/bar/NNNN-<FILE-WRITE-DATE>.nef\"~%
+If PATHNAME-OR-NAMESTRING does not match the pattern above return NIL.~%~@
+PATHNAME-OR-NAMESTRING must name an existing file, an error is signaled if not.~%~@
+Keyword CASE-MODE indicates how case sensitvity is used when matching the
+cl:pathname-type of PATHNAME-OR-NAMESTRING.
+Valid arguments are :upcase :downcase :insensitive and indicate as follows:~%
+ - when CASE-MODE is :upcase \(the default\) only match \"NEF\"
+ - when CASE-MODE is :downcase only match \"nef\"
+ - when CASE-MODE is insensitive match either \"NEF\" or \"nef\"~%~@
+:EXAMPLE~%
+ \(translate-pathname-iphone-image \"/foo/bar/3936_SOLD/DSC_0319.nef\" :case-mode :downcase \)~%
+ \(translate-pathname-iphone-image \"/foo/bar/DSC_0319.NEF\"\)~%
+ \(null \(translate-pathname-iphone-image \"/foo/bar/DSC_0319mmmmm.NEF\"\)\)~%~@
+:SEE-ALSO :SEE-ALSO `directory-nef-images', `translate-pathname-nef-image',
+`rename-file-nef-images-in-directory', `translate-pathname-iphone-image',
+`rename-file-iphone-images-in-directory'.~%▶▶▶")
+
+(mon:fundoc 'rename-file-nef-images-in-directory
+"Rename each file matching the pattern IMG_NNNN.JPG in BASE-DIRECTORY.~%~@
+Rename to NNNN-nk-YYYY-MM-DDTHHMMSS.nef as if by `translate-pathname-nef-image'.~%~@
+Return a list with each element a list having the form:~%
+ \(<RENAME-TO-PATHNAME> <RENAME-FROM-PATHNAME>\)~%~@
+Signal an error if probe-file does not find BASE-DIRECTORY.~%~@
+Keyword WILDEN when non-nil should it should be either T, :wild, or :wild-inferiors.
+When WILDEN is either T or :WILD the BASE-DIRECTORY is searched with a :wild
+pathname component. When WILDEN is :WILD-INFERIORS BASE-DIRECTORY is searched
+with a :WILD-INFERIORS component.
+For example, if BASE-DIRECTORY is #P\"/foo/bar/\" and WILDEN is null or ommitted
+the path searched would be #P\"/foo/bar/*.NEF\"~%
+If WILDEN is T or :wild, the path searched would be #P\"/foo/bar/*/*.NEF\"~%
+If WILDEN is :wild-inferiors the path searched would be #P\"/foo/bar/**/*.NEF\"~%~@
+Keyword CASE-MODE indicates how case sensitvity is used when matching the
+cl:pathname-type of PATHNAME-OR-NAMESTRING.
+Valid arguments are :upcase :downcase :insensitive and indicate as follows:
+ - when CASE-MODE is :upcase \(the default\) only match \"NEF\"
+ - when CASE-MODE is :downcase only match \"nef\"
+ - when CASE-MODE is insensitive match either \"NEF\" or \"nef\"~%~@
+:EXAMPLE~%
+ \(rename-file-iphone-images-in-directory \"/some/path/with/iphone/images/\"\)~%~@
+:SEE-ALSO `directory-nef-images', `translate-pathname-nef-image',
+`rename-file-nef-images-in-directory', `translate-pathname-iphone-image',
+`rename-file-iphone-images-in-directory'.~%▶▶▶")
+
+(mon:fundoc 'directory-nef-images
+"Find pathnames beneath BASE-DIRECTORY with pathname-tyeps matching the
+ppcre regular expression \"^nef$\".~%~@
+BASE-DIRECTORY is a pathname designating a fully qualified directory.
+Signal an error if probe-file does not find BASE-DIRECTORY.~%~@
+Keyword WILDEN when non-nil should be either T, :wild, or :wild-inferiors.
+When WILDEN is either T or :WILD the BASE-DIRECTORY is searched with a :wild
+pathname component. When WILDEN is :WILD-INFERIORS BASE-DIRECTORY is searched
+with a :WILD-INFERIORS component.
+For example, if BASE-DIRECTORY is #P\"/foo/bar/\" and WILDEN is null or ommitted
+the path searched would be #P\"/foo/bar/*.*\"~%
+If WILDEN is T or :wild, the path searched would be #P\"/foo/bar/*/*.*\"~%
+If WILDEN is :wild-inferiors the path searched would be #P\"/foo/bar/**/*.*\"~%~@
+Keyword CASE-MODE when non-nil should be either :upcase :downcase or :insensitive.
+When CASE-MODE is either null or :insensitive do not consider case as
+significant when matching pathname-type with the regular epxression.
+When CASE-MODE is :upcase only pathname-types with all capital characters are matched.
+When CASE-MODE is :downcase only pathname-types with all lowercase characters are matched.~%~@
+:EXAMPLE~%~@
+ { ... <EXAMPLE> ... } ~%~@
+:SEE-ALSO `directory-nef-images', `translate-pathname-nef-image',
+`rename-file-nef-images-in-directory', `translate-pathname-iphone-image',
+`rename-file-iphone-images-in-directory'.~%▶▶▶")
+
+;;; ==============================
 
 
 ;; Local Variables:
