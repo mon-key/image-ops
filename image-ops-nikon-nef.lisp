@@ -4,43 +4,6 @@
 
 (in-package #:image-ops)
 
-;; "([1-2][0-9][0-9][0-9])-([0-1][0-9])-([0-3][0-9])T([0-2][0-9])([0-5][0-9])([0-5][0-9])(([+-][0-2][0-9])([0-9][0-9]))?$"
-;; longform matches any of these:
-;; "2012-03-02T181325"
-;; "2012-03-02T181325+0500"
-;; "2012-03-03T181325-0400"
-;; (defvar *regex-nikon-nef-image-shortform-timestamp* nil)
-
-;; "([1-2][0-9][0-9][0-9])-([0-1][0-9])-([0-3][0-9])T([0-2][0-9])([0-5][0-9])([0-5][0-9])$"
-;; shortform only matches this:
-;; "2012-03-02T181325"
-;; (defvar *regex-nikon-nef-image-longform-timestamp* nil)
-
-;; (cl-ppcre:parse-string "([1-2][0-9][0-9][0-9])-([0-1][0-9])-([0-3][0-9])(T)([0-2][0-9])([0-5][0-9])([0-5][0-9])$")
-
-;;    YYYY                 -  MONTH       -   DAY        T   HOUR       MINUTE      SECOND
-;; "([1-2][0-9][0-9][0-9])-([0-1][0-9])-([0-3][0-9])(T)([0-2][0-9])([0-5][0-9])([0-5][0-9])$"
-
-;; (length "3539462658") => 10
-;; (length "005897-3539462658") => 17
-;; (length "5897-3539462658")   => 15
-
-;; (cl-ppcre:scan-to-strings "^(\\d{2,6})-(\\d{10})$" "5897-3539462658")
-;; (cl-ppcre:scan-to-strings "^(\\d{2,6})-(\\d{10})$" "005897-3539462658")
-;; (cl-ppcre:scan-to-strings "^(\\d{2,6})-(\\d{10})$" "!!!005897-3539462658")
-
-;; (cl-ppcre:register-groups-bind (year month day hour minute second)
-;;      ("([1-2][0-9][0-9][0-9])-([0-1][0-9])-([0-3][0-9])T([0-2][0-9])([0-5][0-9])([0-5][0-9])$"
-;;       "2012-03-02T191133")
-;;    ;; (list second minute hour day month year))
-;;    (when year ;; (and year month day hour minute second)
-;;      (decode-universal-time
-;;       (apply #'encode-universal-time
-;;             (map 'list #'parse-integer 
-;;                  (list second minute hour day month year))
-;;             ))))
-
-
 (defun translate-pathname-nef-image (pathname-or-namestring &key (case-mode :upcase))
   (declare (type (or (eql :upcase) 
                      (eql :downcase)
@@ -114,15 +77,15 @@
     (error ":FUNCTION `rename-file-nef-images-in-directory' -- ~
              arg BASE-DIRECTORY non-existent~% got: ~S" 
            base-directory))
-  ;; (let* ((wild-jpgs (make-pathname :directory (ecase wilden
+  ;; (let* ((wild-nefs (make-pathname :directory (ecase wilden
   ;;                                               ((:wild-inferiors :wild)
   ;;                                                `(,@(pathname-directory base-directory) ,wilden))
   ;;                                               ((t)
   ;;                                                `(,@(pathname-directory base-directory) ,:wild))
   ;;                                               ((nil) `(,@(pathname-directory base-directory))))
   ;;                                  :name :wild
-  ;;                                  :type "JPG"))
-  ;;        (maybe-find-jpgs (directory wild-jpgs)))
+  ;;                                  :type "NEF"))
+  ;;        (maybe-find-jpgs (directory wild-nefs)))
   (let ((maybe-find-nefs (directory-nef-images base-directory
                                                :wilden wilden
                                                :case-mode case-mode)))
