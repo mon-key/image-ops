@@ -76,6 +76,11 @@
              #:directory-nef-images
              #:translate-pathname-nef-image
              #:rename-file-nef-images-in-directory
+             ;;
+             ;; image-ops-copy.lisp
+             #:copy-image-byte-file
+             ;; #:copy-image-cmg-nefs
+             
            ;; image-ops-docs.lisp
              
              ))

@@ -1,0 +1,100 @@
+;;; :FILE-CREATED <Timestamp: #{2012-05-30T20:31:08-04:00Z}#{12223} - by MON>
+;;; :FILE image-ops/image-ops-copy.lisp
+;;; ==============================
+
+(in-package #:image-ops)
+
+;; adapted from `copy-byte-stream' in clime/copy-bytes.lisp
+(defun copy-image-byte-stream (from-byte-stream to-byte-stream &key (element-type 'unsigned-byte))
+  (let ((byte-stream-bfr (make-array 4096 :element-type element-type)))
+    (do ((byte-stream-pos (read-sequence byte-stream-bfr from-byte-stream) 
+                          (read-sequence byte-stream-bfr from-byte-stream)))
+        ((zerop byte-stream-pos) nil)
+      (write-sequence byte-stream-bfr to-byte-stream :end byte-stream-pos))))
+
+;; adapted from `copy-byte-file' in clime/copy-bytes.lisp
+(defun copy-image-byte-file (source-byte-file dest-byte-file 
+                             &key (if-exists :supersede) ;; :error 
+                                  (element-type    'unsigned-byte)
+                                  (set-dest-byte-file-write-date nil))
+  ;; (external-format :default)
+  ;; (report-stream   *standard-output*))
+  ;; (verify-element-type-for-copy-byte element-type :stream report-stream)
+  (with-open-file (byte-input source-byte-file
+                              :direction         :input
+                              :if-does-not-exist :error
+                              ;; :external-format   external-format ; Is this ever applicable?
+                              :element-type      element-type)
+    (with-open-file (byte-output dest-byte-file
+                                 :direction         :output
+                                 :if-does-not-exist :create
+                                 :if-exists         if-exists
+                                 ;; :external-format   external-format ; Is this ever applicable?
+                                 :element-type      element-type)
+      (copy-image-byte-stream byte-input
+                              byte-output 
+                              :element-type element-type)))
+  ;; (probe-file dest-byte-file)
+  (and
+   (probe-file dest-byte-file)
+   (and set-dest-byte-file-write-date
+        (or (mon::set-file-write-date-using-file  (namestring dest-byte-file) (namestring source-byte-file))
+            t))
+   dest-byte-file))
+
+;; Copy nef images matching NEF-IMAGE-REGEX pattern (a string or cl-ppcre scanner)
+;; from NEF-IMAGE-SOURCE-DIRECTORY to a corresponding subdir
+;; beneath NEF-IMAGE-BASE-TARGET-DIRECTORY (if it exists). 
+;; When DELETE-SOURCE-IMAGES is non-nil (the defalut) deletes each matched image
+;; in source directory prior to returning.
+;; NEF-IMAGE-REGEX a regular expression comprised of two register groups the
+;; first of which matches image-names with target directories.
+;;
+;; (copy-image-cmg-nefs :nef-image-source-directory #P"/mnt/RMT-PILOT-SHR/Scan-dump/Vintagette-Ebay/"
+;;                      :nef-image-base-target-directory #P"/mnt/NEF-DRV-A/EBAY/BMP-Scans/CMGbay/"
+;;                      :nef-image-regex (cl-ppcre:create-scanner "(cmg-\\d{4})(-\\d{1,2})"))
+(defun copy-image-cmg-nefs (&key nef-image-source-directory  
+                                 nef-image-base-target-directory
+                                 nef-image-regex
+                                 (delete-source-images t))
+  (declare (pathname nef-image-source-directory  
+                     nef-image-base-target-directory))
+  (let ((results nil)
+        (delete-results nil))
+    (setf results
+          (loop 
+            for image-path in (directory-nef-images nef-image-source-directory :case-mode :downcase)
+            for image-name = (pathname-name image-path)
+            when (let ((maybe-target-nef-directory nil))
+                   (cl-ppcre:register-groups-bind (cmg cmg-suffix) (nef-image-regex image-name)
+                     (and cmg 
+                          cmg-suffix
+                          (setf maybe-target-nef-directory
+                                (nth-value 0 
+                                           (mon:probe-directory         
+                                            (merge-pathnames (make-pathname :directory (list :relative cmg)) nef-image-base-target-directory))))
+                          ;; (cons image-path
+                          ;;                     (merge-pathnames (make-pathname :name image-name :type "nef") 
+                          ;;                                      maybe-target-nef-directory)))))
+                          ;; collect it into gthr
+                          ;; finally (return  gthr)))
+                          (cons image-path
+                                (copy-image-byte-file image-path 
+                                                      (merge-pathnames (make-pathname :name image-name :type "nef")
+                                                                       maybe-target-nef-directory)
+                                                      :set-dest-byte-file-write-date t)))))
+            collect it into gthr))
+    (if delete-source-images
+        (unwind-protect
+             (values results
+                     (progn
+                       (map nil #'(lambda (x) (or (and (delete-file (car x)) 
+                                                       (push t delete-results))
+                                                  (push (cons nil (car x)) delete-results)))
+                            results)
+                       delete-results))
+          (values results delete-results))
+        (values results delete-results))))
+
+;;; ==============================
+;;; EOF

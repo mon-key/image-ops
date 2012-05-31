@@ -23,12 +23,20 @@
   :license "MIT" 
   :description "image operations agglomerated"
   :version "1.0.0"
-  :depends-on (:mon :local-time :tiff4cl) ;; :image-ops-jpeg
+  :depends-on (:mon 
+               :local-time 
+               :tiff4cl
+               ;; :zpng 
+               ;; :png-read 
+               ;; :image-ops-jpeg
+               ) 
   :serial t    
   :components
   ((:file "package") 
    (:file "image-ops-specials")
    (:file "image-ops-macros")
+   ;; (:file "image-ops-png") ; requires zpng and png-read
+   (:file "image-ops-copy")
    (:file "image-ops-rotate")
    (:file "image-ops-hash-dir-tree")
    (:file "image-ops-iphone")
@@ -36,7 +44,6 @@
    (:file "image-ops-docs")
    #+IS-MON (:file "image-ops-loadtime-bind")
    ))
-
 
 ;;; ==============================
 
