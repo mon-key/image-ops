@@ -42,37 +42,45 @@
             t))
    dest-byte-file))
 
-;; Copy nef images matching NEF-IMAGE-REGEX pattern (a string or cl-ppcre scanner)
-;; from NEF-IMAGE-SOURCE-DIRECTORY to a corresponding subdir
-;; beneath NEF-IMAGE-BASE-TARGET-DIRECTORY (if it exists). 
-;; When DELETE-SOURCE-IMAGES is non-nil (the defalut) deletes each matched image
-;; in source directory prior to returning.
-;; NEF-IMAGE-REGEX a regular expression comprised of two register groups the
-;; first of which matches image-names with target directories.
-;;
-;; (copy-image-cmg-nefs :nef-image-source-directory #P"/mnt/RMT-PILOT-SHR/Scan-dump/Vintagette-Ebay/"
-;;                      :nef-image-base-target-directory #P"/mnt/NEF-DRV-A/EBAY/BMP-Scans/CMGbay/"
-;;                      :nef-image-regex (cl-ppcre:create-scanner "(cmg-\\d{4})(-\\d{1,2})"))
-(defun copy-image-cmg-nefs (&key nef-image-source-directory  
-                                 nef-image-base-target-directory
-                                 nef-image-regex
-                                 (delete-source-images t))
-  (declare (pathname nef-image-source-directory  
-                     nef-image-base-target-directory))
+;; (copy-image-cmg-nefs :image-directory-pathname-source #P"/mnt/RMT-PILOT-SHR/Scan-dump/Vintagette-Ebay/"
+;;                      :image-directory-pathname-base-target #P"/mnt/NEF-DRV-A/EBAY/BMP-Scans/CMGbay/"
+;;                      :image-match-regex (cl-ppcre:create-scanner "(cmg-\\d{4})(-\\d{1,2})"))
+(defun copy-image-cmg-nefs (&key image-directory-pathname-source
+                                 image-directory-pathname-base-target
+                                 image-match-regex
+                                 (delete-file-image-source t))
+"Copy nef images matching IMAGE-MATCH-REGEX pattern 
+from IMAGE-DIRECTORY-PATHNAME-SOURCE to a corresponding subdir beneath
+IMAGE-DIRECTORY-PATHNAME-BASE-TARGET (if it exists).
+When DELETE-FILE-IMAGE-SOURCE is non-nil (the defalut) deletes each matched image
+in source directory prior to returning.
+IMAGE-MATCH-REGEX is a regular expression \(a string or cl-ppcre scanner\)
+comprised of two register groups the first of which matches a file's image-name
+with a target directory beneath IMAGE-DIRECTORY-PATHNAME-BASE-TARGET, the second
+value is ignored.
+:EXAMPLE
+ \(copy-image-cmg-nefs :image-directory-pathname-source #P\"/mnt/foo/bar/baz/\"
+                      :image-directory-pathname-base-target #P\"/mnt/quux/zomp/blarg/\"
+                      :image-match-regex \(cl-ppcre:create-scanner \"\(cmg-\\\\d{4}\)\(-\\\\d{1,2}\)\"\)\)
+:SEE-ALSO `copy-image-byte-file'.~%▶▶▶"
+  (declare (pathname image-directory-pathname-source  
+                     image-directory-pathname-base-target))
   (let ((results nil)
         (delete-results nil))
     (setf results
           (loop 
-            for image-path in (directory-nef-images nef-image-source-directory :case-mode :downcase)
+            for image-path in (directory-nef-images image-directory-pathname-source :case-mode :downcase)
             for image-name = (pathname-name image-path)
             when (let ((maybe-target-nef-directory nil))
-                   (cl-ppcre:register-groups-bind (cmg cmg-suffix) (nef-image-regex image-name)
+                   (cl-ppcre:register-groups-bind (cmg cmg-suffix) (image-match-regex image-name)
                      (and cmg 
                           cmg-suffix
                           (setf maybe-target-nef-directory
                                 (nth-value 0 
-                                           (mon:probe-directory         
-                                            (merge-pathnames (make-pathname :directory (list :relative cmg)) nef-image-base-target-directory))))
+                                           ;; :NOTE repeatedly probing the same directory is likely a bottleneck
+                                           (mon:probe-directory 
+                                            (merge-pathnames (make-pathname :directory (list :relative cmg))
+                                                             image-directory-pathname-base-target))))
                           ;; (cons image-path
                           ;;                     (merge-pathnames (make-pathname :name image-name :type "nef") 
                           ;;                                      maybe-target-nef-directory)))))
@@ -84,7 +92,7 @@
                                                                        maybe-target-nef-directory)
                                                       :set-dest-byte-file-write-date t)))))
             collect it into gthr))
-    (if delete-source-images
+    (if delete-file-image-source
         (unwind-protect
              (values results
                      (progn
