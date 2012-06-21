@@ -36,7 +36,7 @@ It is unset with `unset-special-param-read-image-file-list'.
 Its value is used by procedures which exectue `sb-ext:run-program'.~%~@
 :SEE-ALSO `mon::verify-image-magic-convert-path'.~%▶▶▶")
 
-(mon:vardoc '*walk-directory-ignorables* 
+(mon:vardoc '*walk-directory-ignorables*
 "List of directory or filename components which osicat:walk-directory should ignore.~%~@
 Directory names should include traling #\/ \(solidus\).~%~@
 Filenames should _not_ be preceded with leading #\/ \(solidus\).~%~@
@@ -186,7 +186,7 @@ If so, return its `cl:string-downcase'd representation else signal an error.~%~@
 :EXAMPLE~%
  \(progn
    \(setf *read-image-file-list* \(list \"bubba\" \"BUBBA\" \"Bubba\"\)\)
-   \(unset-special-param-read-image-file-list '*read-image-file-list*\)\) 
+   \(unset-special-param-read-image-file-list '*read-image-file-list*\)\)
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
 (mon:fundoc 'read-image-file-list-from-file
@@ -214,10 +214,10 @@ Keyword PREFIX-NAME-WITH is a string to prepend to SOURCE-PATHNAME's `cl:pathnam
 Keyword SUFFIX-NAME-WITH is a string to append to SOURCE-PATHNAME's `cl:pathname-name'.~%~@
 :EXAMPLE~%
  \(make-target-pathname-for-image-resize
-  #P\"/some/source/path/to/existing/image-of-type-bitmpap.bmp\" 
-  :target-directory #P\"/some/destination/path/for/resized/image/\" 
+  #P\"/some/source/path/to/existing/image-of-type-bitmpap.bmp\"
+  :target-directory #P\"/some/destination/path/for/resized/image/\"
   :target-type \"jpg\"
-  :prefix-name-with \"prepended-\" 
+  :prefix-name-with \"prepended-\"
   :suffix-name-with \"-appended\"\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")
 
@@ -243,20 +243,20 @@ Return the pathname of file so written.~%~@
 SEARCH-DIRECTORY names an existing directory containing image files of type SEARCH-TYPE
 SEARCH-TYPE is a string naming a pathname-type image extension satisfying `verify-image-file-output-type'.
 APPEND-SUFFIX is a string to append to the file written. Defaul is as per `time-string-yyyy-mm-dd'.~%~@
-DEST-PATHNAME is a pathname-or-namestring specifying the destination to write to 
+DEST-PATHNAME is a pathname-or-namestring specifying the destination to write to
 if provided it must not be `pathname-or-namestring-not-empty-dotted-or-wild-p'.
 When DEST-PATHNAME is not provided a pathname is generated and written to
 SEARCH-DIRECTORY its namestring has the following form:
  <SEARCH-DIRECTORY>/process-files-<SEARCH-TYPE>-<APPEND-SUFFIX>
 :EXAMPLE~%
- \(write-fprint0-file-for-image-files-in-pathname 
+ \(write-fprint0-file-for-image-files-in-pathname
   :search-directory \"/some/path/full/of/tif/files/\"
   :search-type \"tif\"\)~%
- \(write-fprint0-file-for-image-files-in-pathname 
+ \(write-fprint0-file-for-image-files-in-pathname
   :search-directory \"/some/path/full/of/tif/files/\"
   :search-type \"tif\"
   :append-suffix \"bubba\"\)~%
- \(write-fprint0-file-for-image-files-in-pathname 
+ \(write-fprint0-file-for-image-files-in-pathname
   :search-directory \"/some/path/full/of/tif/files/\"
   :search-type \"tif\"
   :dest-pathname \"/some/path/full/of/tif/files/dump-file\"\)~%
@@ -277,28 +277,28 @@ Keyword SPECIAL-PARAM is a special variable to bind results to. Default is `mon:
 (mon:fundoc 'resize-image-files-in-fprint0-file
 "Resize each null-terminated pathname in FPRINT0-FILE.~%~@
 Keyword resize-x is an unsigned integer value.
-Keywords TARGET-DIRECTORY, TARGET-TYPE, PREFIX-NAME-WITH, and SUFFIX-NAME-WITH are as per 
+Keywords TARGET-DIRECTORY, TARGET-TYPE, PREFIX-NAME-WITH, and SUFFIX-NAME-WITH are as per
 `mon:make-pathname-source-destination-resize-pairs'.
 When SUFFIX-NAME-WITH is not explicitly provided the value of RESIZE-X is
 appended to the resized imaged saved to TARGET-DIRECTORY.~%~@
 :EXAMPLE~%
  \(let* \(\(null-list-directory #P\"/some/directory/with/bitmaps/\" \)
-       \(null-list-pathname  \(merge-pathnames 
+       \(null-list-pathname  \(merge-pathnames
                              \(make-pathname :name \"null-terminated-file-list\"\)
                              null-terminated-file-list\)\)
        \(sb-ext:run-program \"/usr/bin/find\" \(list \(namestring null-list-directory\)
                                                  \"-type\" \"f\" \"-name\" \"*.bmp\" \"-fprint0\"
                                                  \(namestring null-list-pathname\)\)\)
-       \(mon::resize-image-files-in-fprint0-file null-list-pathname 
-                                                :target-directory null-list-directory 
-                                                :target-type \"jpg\" 
+       \(mon::resize-image-files-in-fprint0-file null-list-pathname
+                                                :target-directory null-list-directory
+                                                :target-type \"jpg\"
                                                 :resize-x 1000\)\)\)~%
-\(resize-image-files-in-fprint0-file 
- \(write-fprint0-file-for-image-files-in-pathname 
+\(resize-image-files-in-fprint0-file
+ \(write-fprint0-file-for-image-files-in-pathname
   :search-directory \"/some/path/full/of/tif/files/\"
   :search-type \"tif\"\)
  :target-directory \"/some/path/soon/full/of/jpg/files/\"
- :target-type \"jpg\" 
+ :target-type \"jpg\"
  :resize-x 1000\)~%~@
 :SEE-ALSO `read-image-file-list-from-fprint0-file', `write-fprint0-file-for-image-files-in-pathname'.~%▶▶▶")
 
@@ -416,7 +416,7 @@ reset as if by `cl:clrhash' prior to mapping new keys.~%~@
 :EXAMPLE~%~@
  \(defparameter *long-walking-thread*
    \(image-hash-map-conversion-perform
-    \(image-hash-map-conversion-extension 
+    \(image-hash-map-conversion-extension
      *bmp-gz-hash* *source-dest-conversion-hash*
      \"tif\"
      :clear-conversion t\)
@@ -436,7 +436,7 @@ cocatenating CONVERSION-HASH-TABLE-NAME with the current date as if by
 Keyword W-COMMENT-DELIMIT is a boolean. When T each key/val sexp written is
 preceded by a comment line contained fo 68 #\\; characters.~%~@
 :EXAMPLE~%
- \(image-hash-write-conversion-hash-to-file *source-dest-conversion-hash* 
+ \(image-hash-write-conversion-hash-to-file *source-dest-conversion-hash*
                                            \(make-pathname :directory '\(:absolute \"tmp\"\)\)
                                            \"deserializable-conversion-log\"\)~%~@
 :SEE-ALSO `<XREF>'.~%▶▶▶")

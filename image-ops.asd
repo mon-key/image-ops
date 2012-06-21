@@ -7,7 +7,7 @@
 ;; |  irrationally regard it as a plot to disable me as a programmer by
 ;; |  excommunicating my useful tools."
 ;; |
-;; |     :SOURCE "Knee-jerk Anti-LOOPism and other E-mail Phenomena" p 17 
+;; |     :SOURCE "Knee-jerk Anti-LOOPism and other E-mail Phenomena" p 17
 ;; `---- :SEE http://ccs.mit.edu/papers/CCSWP150.html
 
 
@@ -20,19 +20,19 @@
   ;; :name ""
   :author  "MON KEY"
   :maintainer "MON KEY"
-  :license "MIT" 
+  :license "MIT"
   :description "image operations agglomerated"
   :version "1.0.0"
-  :depends-on (:mon 
-               :local-time 
+  :depends-on (:mon
+               :local-time
                :tiff4cl
-               ;; :zpng 
-               ;; :png-read 
+               ;; :zpng
+               ;; :png-read
                ;; :image-ops-jpeg
-               ) 
-  :serial t    
+               )
+  :serial t
   :components
-  ((:file "package") 
+  ((:file "package")
    (:file "image-ops-specials")
    (:file "image-ops-macros")
    ;; (:file "image-ops-png") ; requires zpng and png-read

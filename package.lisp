@@ -7,7 +7,7 @@
 
 
 (defpackage #:image-ops (:use #:common-lisp) ;; #+sbcl #:sb-int
-            (:export 
+            (:export
              ;;
              #:*exiftool-path*
              #:*image-magick-convert-path*
@@ -16,29 +16,28 @@
              ;;
            ;; image-ops-specials.lisp
              ;;
-             #:*PSD-SCANNER* 
-             #:*JPG-GZ-SCANNER* 
-             #:*JPG-SCANNER* 
-             #:*BMP-SCANNER* 
-             #:*BMP-GZ-SCANNER* 
-             #:*NEF-SCANNER* 
+             #:*PSD-SCANNER*
+             #:*JPG-GZ-SCANNER*
+             #:*JPG-SCANNER*
+             #:*BMP-SCANNER*
+             #:*BMP-GZ-SCANNER*
+             #:*NEF-SCANNER*
              #:*TIFF-SCANNER*
              #:*EXTENSION-GZ-SCANNER*
              ;;
-             #:*BMP-HASH*  
+             #:*BMP-HASH*
              #:*BMP-GZ-HASH*
-             #:*NEF-HASH*  
-             #:*JPG-HASH* 
-             #:*JPG-GZ-SCANNER* 
-             #:*TIFF-HASH*  
-             #:*PSD-HASH*   
+             #:*NEF-HASH*
+             #:*JPG-HASH*
+             #:*JPG-GZ-SCANNER*
+             #:*TIFF-HASH*
+             #:*PSD-HASH*
              #:*OTHER-HASH*
              #:*SOURCE-DEST-CONVERSION-HASH*
              ;;
-             ;; 
              ;;
            ;; image-ops/image-ops-macros.lisp
-             ;; 
+             ;;
              ;; #:with-hash-table-op
              ;;
            ;; image-hash-directory-tree.lisp
@@ -68,7 +67,7 @@
              #:resize-image-files-in-fprint0-file
              #:rotate-image-files-in-dir-list
              ;; image-ops-iphone.lisp
-             #:directory-jpg-images             
+             #:directory-jpg-images
              #:translate-pathname-iphone-image
              #:rename-file-iphone-images-in-directory
              ;;
@@ -80,9 +79,9 @@
              ;; image-ops-copy.lisp
              #:copy-image-byte-file
              ;; #:copy-image-cmg-nefs
-             
+             ;;
            ;; image-ops-docs.lisp
-             
+             ;;
              ))
 
 

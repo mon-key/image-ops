@@ -16,19 +16,19 @@
 
 (defparameter *image-magick-convert-path*
   ;; :NOTE MS-windows has a convert that is _not_ equivalent to ImageMagick's:
-  #+(or win32 windows) nil 
+  #+(or win32 windows) nil
   ;;
   #-sbcl (and (probe-file #P"/usr/bin/convert") "/usr/bin/convert")
   ;;
   ;; We assume that any of the following have convert in /user/bin/ if
   ;; `mon:executable-find' doesn't return T:
   ;; #+(or linux darwin netbsd openbsd freebsd)
-  #+sbcl (or (mon:executable-find "convert") 
+  #+sbcl (or (mon:executable-find "convert")
              (and (probe-file #P"/usr/bin/convert")
                   "/usr/bin/convert")))
 
 (defparameter *exiftool-path*
-  #+(or win32 windows) nil 
+  #+(or win32 windows) nil
   #-sbcl (and (probe-file #P"/usr/bin/exiftool") "/usr/bin/exiftool")
   #+sbcl (or (mon:executable-find "exiftool")
              (and (probe-file #P"/usr/bin/exiftool")
@@ -46,26 +46,20 @@
                                                 ;;
                                                 ".BridgeCache" ".BridgeCacheT" "Thumbs.db"))
 
-(defvar *psd-scanner* 
-  (cl-ppcre:create-scanner "^/.*\\.(psd|PSD)$"))
+(defvar *psd-scanner*   (cl-ppcre:create-scanner "^/.*\\.(psd|PSD)$"))
 
-(defvar *jpg-scanner* 
-  (cl-ppcre:create-scanner "^/.*\\.(jpe?g|JPE?G)$"))
+(defvar *jpg-scanner*    (cl-ppcre:create-scanner "^/.*\\.(jpe?g|JPE?G)$"))
 
-(defvar *jpg-gz-scanner* 
-  (cl-ppcre:create-scanner "^/.*\\.(jpe?g\\.gz)$"))
+(defvar *jpg-gz-scanner* (cl-ppcre:create-scanner "^/.*\\.(jpe?g\\.gz)$"))
 
-(defvar *bmp-scanner* 
-  (cl-ppcre:create-scanner "^/.*\\.(bmp|BMP)$"))
+(defvar *bmp-scanner*    (cl-ppcre:create-scanner "^/.*\\.(bmp|BMP)$"))
 
-(defvar *bmp-gz-scanner* 
-  (cl-ppcre:create-scanner "^/.*\\.(bmp\\.gz)$"))
+(defvar *bmp-gz-scanner* (cl-ppcre:create-scanner "^/.*\\.(bmp\\.gz)$"))
 
-(defvar *nef-scanner* 
-  (cl-ppcre:create-scanner "^/.*\\.(nef|NEF)$"))
+(defvar *nef-scanner*    (cl-ppcre:create-scanner "^/.*\\.(nef|NEF)$"))
 
-(defvar *tiff-scanner*
-  (cl-ppcre:create-scanner "^/.*\\.(tiff?|TIFF)$"))
+;; :NOTE Why isn't this "^/.*\\.(tiff?|TIFF?)$" instead?
+(defvar *tiff-scanner*   (cl-ppcre:create-scanner "^/.*\\.(tiff?|TIFF)$"))
 
 ;; Matches bmp.gz jpg.gz jpeg.gz
 ;; :EXAMPLE
@@ -73,8 +67,7 @@
 ;;  (list a b c))
 ;; :NOTE barring the zero-length string we could also prob. do:
 ;;  (string= "gz" <STRING-2> :start2 (- (length <STRING-2>)  2))
-(defvar *extension-gz-scanner*
-  (cl-ppcre:create-scanner "^(.{3,4})(\\.)(gz)$"))
+(defvar *extension-gz-scanner* (cl-ppcre:create-scanner "^(.{3,4})(\\.)(gz)$"))
 
 (defvar *bmp-hash*    (make-hash-table :test #'equal :synchronized t))
 
@@ -102,17 +95,17 @@
 ;;
 ;; (defparameter *FILE-VALID-IMAGE-MIME-TYPES*
 ;;   ;;(setq *FILE-VALID-IMAGE-MIME-TYPES*
-;;   (list "tiff" "tif" 
+;;   (list "tiff" "tif"
 ;;         "jpeg" "jpg"                         ;; "pjpeg"
 ;;         "bmp"  "x-bmp" "x-ms-bmp" "x-MS-bmp" ;; x-win-bitmap
 ;;         "nef"  "x-nikon-nef"                 ;; x-niff -- Nikon
 ;;         "dng"                                ;; x-adobe-dng -- Adobe
-;;         "png" 
+;;         "png"
 ;;         "svg" ;; svg+xml
 ;;         "psd" "x-psd"
 ;;         ;; "x-dcraw"
-;;         ;; "crw" "cr2"                       ;; x-canon-cr2 x-canon-crw -- Cannon 
-;;         ;; "gif" 
+;;         ;; "crw" "cr2"                       ;; x-canon-cr2 x-canon-crw -- Cannon
+;;         ;; "gif"
 ;;         ))
 ;;
 ;;; ==============================

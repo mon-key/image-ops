@@ -37,4 +37,14 @@
 	       (aref (zpng:data-array png) row column 3)))))
 
 ;;; ==============================
+
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; show-trailing-whitespace: t
+;; mode: lisp-interaction
+;; End:
+
+
+;;; ==============================
 ;;; EOF
